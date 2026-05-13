@@ -52,7 +52,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <motion.a
-            href="https://wa.me/554832345678?text=Olá! Gostaria de solicitar um orçamento para meu projeto de construção."
+            href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento para meu projeto de construção."
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-4 bg-accent-600 text-white rounded-lg font-semibold text-lg hover:bg-accent-700 transition-all"

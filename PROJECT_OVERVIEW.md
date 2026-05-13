@@ -244,7 +244,7 @@ metrica/
 - Equipe: 50+ profissionais
 
 ### Contato
-- WhatsApp: (48) 3234-5678
+- WhatsApp: (48) 98828-5002
 - Email: contato@metrica.com.br
 - Endereço: Rua Principal, 1000
 

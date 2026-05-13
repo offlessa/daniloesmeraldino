@@ -155,7 +155,7 @@ Accent (Verde Acinzentado):
 ## 🔧 Customização
 
 ### Número de WhatsApp
-Edite o número nos componentes (procure por `wa.me/554832345678`):
+Edite o número nos componentes (procure por `wa.me/5548988285002`):
 
 ```tsx
 href="https://wa.me/SEU_NUMERO?text=Olá"

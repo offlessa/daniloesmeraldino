@@ -39,7 +39,7 @@ Edite `src/constants/config.ts`:
 ```typescript
 export const COMPANY = {
   name: 'Métrica Construções',
-  phone: '+554832345678', // SEU NÚMERO
+  phone: '+5548988285002', // SEU NÚMERO
   email: 'contato@metrica.com.br', // SEU EMAIL
   // ... outras informações
 }
@@ -48,7 +48,7 @@ export const COMPANY = {
 ### 2. Número de WhatsApp
 
 O número aparece em vários lugares. Procure por:
-- `554832345678` (sem símbolos)
+- `5548988285002` (sem símbolos)
 - `(48) 3234-5678` (formatado)
 
 E substitua por SEU número. Está usado em:
@@ -342,7 +342,7 @@ Parabéns! Você tem uma landing page moderna e profissional.
 ---
 
 **Precisa de ajuda?**
-- WhatsApp: (48) 3234-5678
+- WhatsApp: (48) 98828-5002
 - Email: contato@metrica.com.br
 - Leia a documentação completa em README.md
 

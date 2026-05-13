@@ -63,7 +63,7 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <motion.a
-            href="https://wa.me/554832345678?text=Olá! Gostaria de solicitar um orçamento"
+            href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento"
             target="_blank"
             rel="noopener noreferrer"
             className={`hidden md:flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-colors ${isScrolled ? 'bg-accent-600 text-white hover:bg-accent-700' : 'bg-white text-accent-600 hover:bg-primary-100'}`}
@@ -107,7 +107,7 @@ export default function Navbar() {
                 </button>
               ))}
               <a
-                href="https://wa.me/554832345678?text=Olá! Gostaria de solicitar um orçamento"
+                href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full bg-accent-600 text-white px-4 py-3 rounded-lg font-semibold text-center hover:bg-accent-700 mt-4"

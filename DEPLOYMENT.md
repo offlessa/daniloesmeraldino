@@ -32,7 +32,7 @@ npm run build -- --mode production
 
 **Variáveis de ambiente** (.env.production):
 ```
-VITE_WHATSAPP_NUMBER=554832345678
+VITE_WHATSAPP_NUMBER=5548988285002
 VITE_COMPANY_EMAIL=contato@metrica.com.br
 ```
 
@@ -322,7 +322,7 @@ jobs:
 ## 📞 Suporte
 
 **Contato para issues**:
-- WhatsApp: (48) 3234-5678
+- WhatsApp: (48) 98828-5002
 - Email: contato@metrica.com.br
 
 ---

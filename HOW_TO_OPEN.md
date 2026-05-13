@@ -87,7 +87,7 @@ Clique no link ou abra o navegador em `http://localhost:5173`
 📁 `src/components/Portfolio.tsx` - URLs das imagens
 
 ### Para Mudar Número de WhatsApp
-🔍 Procure por: `554832345678` (use Ctrl+Shift+F)
+🔍 Procure por: `5548988285002` (use Ctrl+Shift+F)
 
 ## 📱 Testando em Mobile
 
@@ -150,7 +150,7 @@ npm run dev -- --port 5174
 ### Trocar Número de WhatsApp
 
 1. Abra `src/constants/config.ts`
-2. Procure: `whatsapp: '554832345678'`
+2. Procure: `whatsapp: '5548988285002'`
 3. Troque para seu número (exemplo: `'554733334444'`)
 4. Salve (`Ctrl+S`)
 5. Página atualiza automaticamente

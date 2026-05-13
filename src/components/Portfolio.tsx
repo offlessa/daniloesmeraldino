@@ -172,7 +172,7 @@ export default function Portfolio() {
           viewport={{ once: true, margin: '-100px' }}
         >
           <motion.a
-            href="https://wa.me/554832345678?text=Olá! Gostaria de conhecer mais sobre os projetos e solicitar um orçamento."
+            href="https://wa.me/5548988285002?text=Olá! Gostaria de conhecer mais sobre os projetos e solicitar um orçamento."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 bg-accent-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-accent-700"

@@ -89,7 +89,7 @@ export default function CTA() {
 
               {/* WhatsApp Button */}
               <motion.a
-                href="https://wa.me/554832345678?text=Olá! Gostaria de solicitar um orçamento para meu projeto de construção. Poderia me enviar mais informações?"
+                href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento para meu projeto de construção. Poderia me enviar mais informações?"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-accent-500 to-accent-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-accent-600 hover:to-accent-700 transition-all"
@@ -110,7 +110,7 @@ export default function CTA() {
               >
                 <p className="text-primary-600 text-sm mb-3">Ou ligue direto:</p>
                 <motion.a
-                  href="tel:+554832345678"
+                  href="tel:+5548988285002"
                   className="text-2xl font-bold text-accent-600 hover:text-accent-700 transition-colors"
                   whileHover={{ scale: 1.05 }}
                 >

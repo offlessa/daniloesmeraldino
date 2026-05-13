@@ -16,10 +16,10 @@ export const COMPANY = {
 }
 
 export const CONTACT = {
-  phone: '+554832345678',
+  phone: '+5548988285002',
   phoneFormatted: '(48) 3234-5678',
   email: 'contato@metrica.com.br',
-  whatsapp: '554832345678', // Sem símbolos
+  whatsapp: '5548988285002', // Sem símbolos
 }
 
 export const SOCIAL_MEDIA = {
