@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, ArrowUp } from 'lucide-react'
-import logo from '../assets/Logo Danilo Esmeraldino-02 (1).png'
+import logo from '../assets/danilo-esmeraldino-logo.png'
 
 export default function Footer() {
   const scrollToTop = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { motion } from 'framer-motion'
-import logo from '../assets/Logo Danilo Esmeraldino-02 (1).png'
+import logo from '../assets/danilo-esmeraldino-logo.png'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
