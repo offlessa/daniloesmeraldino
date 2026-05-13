@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, ArrowUp } from 'lucide-react'
-import logo from '../assets/danilo-esmeraldino-logo.png'
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -48,7 +47,7 @@ export default function Footer() {
           {/* Brand */}
           <motion.div variants={itemVariants}>
             <div className="mb-4">
-              <img src={logo} alt="Danilo Esmeraldino Logo" className="h-20 w-auto" />
+              <img src="/images/danilo-esmeraldino-logo.png" alt="Danilo Esmeraldino Logo" className="h-20 w-auto" />
             </div>
             <p className="text-primary-300 leading-relaxed mb-4">
               Especializando-me em soluções que transformam visões em realidade.

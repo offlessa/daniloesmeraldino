@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section id="hero" className="relative w-full h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(src/assets/hero-background.jpg)' }}></div>
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/hero-background.jpg')" }}></div>
       
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-black bg-opacity-70"></div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { motion } from 'framer-motion'
-import logo from '../assets/danilo-esmeraldino-logo.png'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -40,11 +39,11 @@ export default function Navbar() {
             className="flex items-center"
             whileHover={{ scale: 1.05 }}
           >
-            <img src={logo} alt="Danilo Esmeraldino Logo" className="h-16 w-auto" />
+            <img src="/images/danilo-esmeraldino-logo.png" alt="Danilo Esmeraldino Logo" className="h-16 w-auto" />
           </motion.div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             {[
               { label: 'Início', id: 'hero' },
               { label: 'Diferencial', id: 'authority' },
