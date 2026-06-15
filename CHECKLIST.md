@@ -1,4 +1,4 @@
-# ✅ Checklist de Projeto - Métrica Construções Landing Page
+# ✅ Checklist de Projeto - Danilo Esmeraldino Landing Page
 
 ## 📦 Estrutura de Arquivos
 

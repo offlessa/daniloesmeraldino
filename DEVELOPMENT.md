@@ -1,4 +1,4 @@
-# Guia de Desenvolvimento - Métrica Construções
+# Guia de Desenvolvimento - Danilo Esmeraldino
 
 ## 📋 Sumário
 

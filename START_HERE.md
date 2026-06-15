@@ -1,6 +1,6 @@
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║                                                                            ║
-║                   🎉 LANDING PAGE MÉTRICA CONSTRUÇÕES 🎉                  ║
+║                   🎉 LANDING PAGE DANILO ESMERALDINO 🎉                   ║
 ║                                                                            ║
 ║                       ✨ PROJETO COMPLETO E PRONTO ✨                      ║
 ║                                                                            ║
@@ -340,7 +340,7 @@ BEST_PRACTICES.md
 ───────────────────────────────────────────────────────────────────────────
 
 EMPRESA:
-   ✅ Nome: Métrica Construções
+   ✅ Nome: Danilo Esmeraldino
    ✅ Localização: Tubarão - SC
    ✅ Contato: (48) 3234-5678
 
