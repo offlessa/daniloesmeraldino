@@ -18,15 +18,15 @@ export const COMPANY = {
 export const CONTACT = {
   phone: '+5548988285002',
   phoneFormatted: '(48) 3234-5678',
-  email: 'contato@metrica.com.br',
+  email: 'danilo.esmeraldino@gmail.com.br',
   whatsapp: '5548988285002', // Sem símbolos
 }
 
 export const SOCIAL_MEDIA = {
-  facebook: 'https://facebook.com/metrica-construcoes',
-  instagram: 'https://instagram.com/metrica_construcoes',
-  linkedin: 'https://linkedin.com/company/metrica-construcoes',
-  youtube: 'https://youtube.com/c/metrica-construcoes',
+  facebook: 'https://facebook.com/notivuss/',
+  instagram: 'https://instagram.com/daniloesmeraldino',
+  linkedin: 'https://linkedin.com/in/danilo-de-pieri-esmeraldino-647876118',
+  youtube: 'https://youtube.com/c/daniloesmeraldino',
 }
 
 export const SERVICES = [
