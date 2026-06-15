@@ -1,140 +1,126 @@
 import { motion } from 'framer-motion'
 import { Building2, Briefcase, Wrench, Hammer, Palette, Users } from 'lucide-react'
 
+const differentials = [
+  {
+    icon: Building2,
+    title: 'Projetos Residenciais',
+    description: 'Projetos de alto padrão com acabamento premium e atenção aos detalhes',
+  },
+  {
+    icon: Briefcase,
+    title: 'Projetos Comerciais',
+    description: 'Soluções comerciais modernas e funcionalidade otimizada',
+  },
+  {
+    icon: Wrench,
+    title: 'Gerenciamento de Obras',
+    description: 'Controle total do projeto com prazos garantidos e qualidade assegurada',
+  },
+  {
+    icon: Hammer,
+    title: 'Reformas',
+    description: 'Modernização e revitalização completa de espaços',
+  },
+  {
+    icon: Palette,
+    title: 'Projetos de Interiores',
+    description: 'Soluções "chave na mão" — do projeto à entrega completa',
+  },
+  {
+    icon: Users,
+    title: 'Equipe Especializada',
+    description: 'Profissionais experientes e comprometidos com excelência',
+  },
+]
+
+const stats = [
+  { number: '12+', label: 'Anos de Experiência' },
+  { number: '200+', label: 'Projetos Completos' },
+  { number: '100%', label: 'Clientes Satisfeitos' },
+  { number: '10+', label: 'Profissionais' },
+]
+
 export default function Authority() {
-  const differentials = [
-    {
-      icon: Building2,
-      title: 'Projetos Residenciais',
-      description: 'Projetos de alto padrão com acabamento premium e atenção aos detalhes',
-    },
-    {
-      icon: Briefcase,
-      title: 'Projetos Comerciais',
-      description: 'Soluções comerciais modernas e funcionalidade otimizada',
-    },
-    {
-      icon: Wrench,
-      title: 'Gerenciamento de Obras',
-      description: 'Controle total do projeto com prazos garantidos e qualidade assegurada',
-    },
-    {
-      icon: Hammer,
-      title: 'Reformas',
-      description: 'Modernização e revitalização completa de espaços',
-    },
-    {
-      icon: Palette,
-      title: 'Projetos de Interiores',
-      description: 'Soluções "chave na mão" - do projeto à entrega completa',
-    },
-    {
-      icon: Users,
-      title: 'Equipe Especializada',
-      description: 'Profissionais experientes e comprometidos com excelência',
-    },
-  ]
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  }
-
   return (
-    <section id="authority" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+    <section id="authority" className="py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: '-80px' }}
         >
-          <h2 className="text-4xl sm:text-5xl font-bold text-primary-900 mb-4">
+          <span className="inline-block text-accent-600 text-xs font-bold tracking-widest uppercase mb-3">
+            Por que nos escolher
+          </span>
+          <h2 className="font-serif text-4xl sm:text-5xl font-bold text-primary-900 max-w-xl leading-tight">
             Por Que Escolher o Danilo Esmeraldino?
           </h2>
-          <p className="text-xl text-primary-600 max-w-2xl mx-auto">
-            Somos especialistas em construção de alta qualidade com compromisso com prazos e excelência
+          <p className="mt-4 text-primary-600 text-lg max-w-2xl">
+            Especialistas em construção de alta qualidade com compromisso com prazos e excelência
           </p>
         </motion.div>
 
         {/* Differentials Grid */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: '-80px' }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.08 } },
+          }}
         >
           {differentials.map((item, index) => {
             const Icon = item.icon
             return (
               <motion.div
                 key={index}
-                className="group p-8 rounded-xl bg-primary-50 border border-primary-200 hover:border-accent-500 hover:shadow-xl transition-all duration-300 hover:bg-white cursor-default"
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
+                className="group flex gap-5 p-7 rounded-2xl border border-primary-200 hover:border-accent-300 hover:shadow-lg hover:shadow-accent-900/5 bg-white transition-all duration-300"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+                }}
+                whileHover={{ y: -4 }}
               >
-                <motion.div
-                  className="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
-                  whileHover={{ rotate: 10 }}
-                >
-                  <Icon size={32} className="text-white" />
-                </motion.div>
-                
-                <h3 className="text-xl font-bold text-primary-900 mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-primary-600 leading-relaxed">
-                  {item.description}
-                </p>
+                <div className="flex-shrink-0 w-12 h-12 bg-accent-50 group-hover:bg-accent-600 rounded-xl flex items-center justify-center transition-colors duration-300">
+                  <Icon
+                    size={22}
+                    className="text-accent-600 group-hover:text-white transition-colors duration-300"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-primary-900 mb-1.5">{item.title}</h3>
+                  <p className="text-primary-600 text-sm leading-relaxed">{item.description}</p>
+                </div>
               </motion.div>
             )
           })}
         </motion.div>
 
-        {/* Stats Section */}
+        {/* Stats Band */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-20 pt-20 border-t border-primary-200"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true, margin: '-100px' }}
+          className="mt-20 rounded-3xl bg-gradient-to-br from-accent-900 via-accent-800 to-accent-900 p-10 grid grid-cols-2 md:grid-cols-4 gap-8"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true, margin: '-80px' }}
         >
-          {[
-            { number: '12+', label: 'Anos de Experiência' },
-            { number: '200+', label: 'Projetos Completos' },
-            { number: '100%', label: 'Clientes Satisfeitos' },
-            { number: '10+', label: 'Profissionais na Equipe' },
-          ].map((stat, index) => (
+          {stats.map((stat, i) => (
             <motion.div
-              key={index}
+              key={i}
               className="text-center"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.85 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true, margin: '-100px' }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              viewport={{ once: true }}
             >
-              <h3 className="text-4xl sm:text-5xl font-bold text-accent-600 mb-2">
-                {stat.number}
-              </h3>
-              <p className="text-primary-600 text-lg">{stat.label}</p>
+              <p className="text-4xl sm:text-5xl font-bold text-accent-300 mb-1">{stat.number}</p>
+              <p className="text-accent-200/60 text-xs uppercase tracking-wider">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
