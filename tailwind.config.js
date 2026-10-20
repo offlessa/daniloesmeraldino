@@ -31,10 +31,13 @@ export default {
           800: '#0d473e',
           900: '#052726',
         },
+        // Cores da logo
+        olive: { DEFAULT: '#454334', light: '#6b6852', dark: '#2f2e23' },
+        sand: { DEFAULT: '#dcd4cd', light: '#f5f1ed' },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        serif: ['EB Garamond', 'Georgia', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.6s ease-in',

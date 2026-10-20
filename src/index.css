@@ -40,3 +40,37 @@ body {
 a, button {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Underlined inline links (estilo editorial) — cores da logo */
+.link-underline {
+  color: #6b6852;
+  text-decoration: none;
+  background-image: linear-gradient(#dcd4cd, #dcd4cd);
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.4s ease, color 0.3s ease;
+}
+
+.link-underline:hover {
+  color: #454334;
+  background-image: linear-gradient(#454334, #454334);
+}
+
+.link-underline-light {
+  color: #f5f1ed;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(220, 212, 205, 0.5);
+  padding-bottom: 2px;
+}
+
+.link-underline-light:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+::selection {
+  background: #dcd4cd;
+  color: #454334;
+}

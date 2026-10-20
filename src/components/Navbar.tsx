@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { INTRO_DELAY } from '../constants/motion'
 
 const navItems = [
-  { label: 'Início', id: 'hero' },
-  { label: 'Diferencial', id: 'authority' },
-  { label: 'Portfólio', id: 'portfolio' },
+  { label: 'Projetos', id: 'portfolio' },
   { label: 'Processo', id: 'process' },
   { label: 'Sobre', id: 'about' },
+  { label: 'Depoimentos', id: 'testimonials' },
+  { label: 'Contato', id: 'contact' },
 ]
 
 export default function Navbar() {
@@ -15,119 +15,136 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 60)
+    const handleScroll = () => setIsScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
     setIsOpen(false)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <motion.nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-primary-100'
-          : 'bg-transparent'
-      }`}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <motion.button onClick={() => scrollToSection('hero')} whileHover={{ scale: 1.02 }}>
+    <>
+      <motion.header
+        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
+          isScrolled ? 'bg-white/85 backdrop-blur-md border-b border-sand' : 'bg-transparent'
+        }`}
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: INTRO_DELAY, duration: 0.8 }}
+      >
+        <div
+          className={`flex justify-between items-center px-6 sm:px-10 lg:px-20 transition-all duration-500 ${
+            isScrolled ? 'h-20' : 'h-28'
+          }`}
+        >
+          <button onClick={() => scrollToSection('hero')} aria-label="Início">
             <img
               src="/images/danilo-esmeraldino-logo.png"
               alt="Danilo Esmeraldino"
-              className="h-14 w-auto"
-            />
-          </motion.button>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`relative text-sm font-medium tracking-wide transition-colors group ${
-                  isScrolled
-                    ? 'text-primary-700 hover:text-accent-600'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                {item.label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" />
-              </button>
-            ))}
-          </div>
-
-          {/* CTA + Mobile Toggle */}
-          <div className="flex items-center gap-3">
-            <motion.a
-              href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`hidden md:flex items-center px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                isScrolled
-                  ? 'bg-accent-600 text-white hover:bg-accent-700'
-                  : 'bg-white/15 backdrop-blur-sm text-white border border-white/30 hover:bg-white/25'
+              className={`w-auto transition-all duration-500 ${
+                isScrolled ? 'h-9 sm:h-10' : 'h-11 sm:h-14'
               }`}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Orçamento Gratuito
-            </motion.a>
+            />
+          </button>
+
+          <div className="flex items-center gap-10">
+            <nav className="hidden lg:flex items-center gap-9">
+              {navItems.slice(0, 4).map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="group relative text-[11px] tracking-[0.3em] uppercase text-olive"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1.5 left-0 h-px w-full bg-olive scale-x-0 origin-right group-hover:scale-x-100 group-hover:origin-left transition-transform duration-500" />
+                </button>
+              ))}
+            </nav>
 
             <button
-              className={`md:hidden p-2 rounded-lg transition-colors ${
-                isScrolled
-                  ? 'text-primary-900 hover:bg-primary-100'
-                  : 'text-white hover:bg-white/10'
-              }`}
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => scrollToSection('contact')}
+              className="hidden md:inline-flex text-[11px] tracking-[0.3em] uppercase bg-olive text-sand-light px-6 py-3 hover:bg-olive-dark transition-colors"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              Orçamento
+            </button>
+
+            {/* Botão do menu */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
+              className="relative z-[60] w-12 h-12 border border-sand bg-white flex flex-col items-center justify-center gap-[7px]"
+            >
+              <span
+                className={`block h-px w-6 bg-olive transition-transform duration-300 ${
+                  isOpen ? 'translate-y-[8px] rotate-45' : ''
+                }`}
+              />
+              <span
+                className={`block h-px w-4 self-end mr-3 bg-olive transition-opacity duration-300 ${
+                  isOpen ? 'opacity-0' : ''
+                }`}
+              />
+              <span
+                className={`block h-px w-6 bg-olive transition-transform duration-300 ${
+                  isOpen ? '-translate-y-[8px] -rotate-45' : ''
+                }`}
+              />
             </button>
           </div>
         </div>
+      </motion.header>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              className="md:hidden bg-white border-t border-primary-100 rounded-b-2xl shadow-xl overflow-hidden"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div className="px-4 py-5 space-y-1">
+      {/* Menu em tela cheia */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.nav
+            className="fixed inset-0 z-50 bg-olive text-sand overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="min-h-full grid lg:grid-cols-12 gap-12 px-6 sm:px-10 lg:px-20 pt-36 pb-16">
+              <ul className="lg:col-span-7 space-y-2">
                 {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left px-4 py-3 rounded-xl text-primary-700 hover:bg-accent-50 hover:text-accent-700 font-medium transition-colors"
-                  >
-                    {item.label}
-                  </button>
+                  <li key={item.id}>
+                    <button
+                      onClick={() => scrollToSection(item.id)}
+                      className="py-2 font-serif text-4xl sm:text-6xl text-sand-light hover:text-white transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  </li>
                 ))}
-                <a
-                  href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar um orçamento"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full text-center mt-3 bg-accent-600 text-white px-4 py-3 rounded-full font-semibold text-sm hover:bg-accent-700 transition-colors"
-                >
-                  Orçamento Gratuito
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.nav>
+              </ul>
+
+              <motion.div
+                className="lg:col-span-4 lg:col-start-9 self-end space-y-8 text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+              >
+                <div>
+                  <p className="text-[10px] tracking-[0.35em] uppercase text-sand/50 mb-2">Contato</p>
+                  <p className="text-sand-light">(48) 98828-5002</p>
+                  <p className="text-sand-light">danilo.esmeraldino@gmail.com.br</p>
+                </div>
+                <div>
+                  <p className="text-[10px] tracking-[0.35em] uppercase text-sand/50 mb-2">Estúdio</p>
+                  <p className="text-sand-light">
+                    R. Padre Geraldo Spettmann, 326 — sala B
+                    <br />
+                    Humaitá, Tubarão — SC
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

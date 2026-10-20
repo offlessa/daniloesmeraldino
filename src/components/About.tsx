@@ -1,149 +1,63 @@
-import { motion } from 'framer-motion'
-import { MapPin, Users, Building, Award } from 'lucide-react'
+import SectionHeader from './SectionHeader'
+import ParallaxRect from './ParallaxRect'
+import FadeIn from './FadeIn'
 
-const values = [
-  { title: 'Excelência', desc: 'Qualidade em cada detalhe' },
-  { title: 'Confiança', desc: 'Transparência e credibilidade' },
-  { title: 'Inovação', desc: 'Tecnologia e modernidade' },
-  { title: 'Sustentabilidade', desc: 'Construções responsáveis' },
-]
-
-const cards = [
-  { icon: MapPin, title: 'Localização', desc: 'Tubarão — SC' },
-  { icon: Users, title: 'Equipe', desc: '10+ profissionais' },
-  { icon: Building, title: 'Projetos', desc: '200+ completos' },
-  { icon: Award, title: 'Experiência', desc: '12+ anos' },
+const services = [
+  'Projetos Residenciais',
+  'Projetos Comerciais',
+  'Projetos de Interiores',
+  'Gerenciamento de Obras',
+  'Reformas',
 ]
 
 export default function About() {
   return (
-    <section
-      id="about"
-      className="py-28 bg-primary-900 text-white relative overflow-hidden"
-    >
-      {/* Background blobs */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-20 left-20 w-80 h-80 bg-accent-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent-700 rounded-full blur-3xl" />
-      </div>
+    <section id="about" className="relative py-32 lg:py-44 px-6 sm:px-10 lg:px-20">
+      <ParallaxRect className="right-0 top-24 w-1/3 lg:w-1/5 h-2" speed={30} grow="right" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true, margin: '-80px' }}
-          >
-            <span className="inline-block text-accent-400 text-xs font-bold tracking-widest uppercase mb-4">
-              Sobre Nós
-            </span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-bold mb-6 leading-tight">
-              Quem Somos
-            </h2>
+      <div className="relative z-10 grid lg:grid-cols-12 gap-16 lg:gap-8 items-center">
+        <FadeIn className="lg:col-span-6 order-2 lg:order-1 relative">
+          <div aria-hidden className="absolute -right-4 sm:-right-8 -top-8 w-1/3 h-1/2 bg-olive" />
+          <div className="relative overflow-hidden aspect-[4/5] bg-sand-light">
+            <img
+              src="/images/web/casa-esmeralda-varanda.jpg"
+              alt="Casa Esmeralda — Estúdio Danilo Esmeraldino"
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </FadeIn>
 
-            <p className="text-white/70 text-lg mb-5 leading-relaxed">
-              O Estúdio Danilo Esmeraldino é uma empresa especializada em projetos residenciais e
-              comerciais de alto padrão em Tubarão — SC. Com mais de 12 anos de experiência,
-              consolidamos nossa reputação através da excelência em projetos e gestão de obras.
+        <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2">
+          <SectionHeader label="Sobre" title={<>Projeto e obra<br /><em className="text-olive-light">sob um só olhar</em></>} />
+
+          <FadeIn className="mt-12 space-y-6 text-lg leading-relaxed text-primary-700">
+            <p>
+              Há mais de 12 anos, o escritório consolida sua reputação pela excelência em projetos e
+              gestão de obras. Cada trabalho carrega a identidade do Danilo: a imponência das
+              fachadas, os detalhes de luxo e a preocupação constante com a funcionalidade dos
+              espaços.
             </p>
-
-            <p className="text-white/70 text-lg mb-10 leading-relaxed">
-              Nossa equipe de profissionais altamente qualificados está comprometida em transformar
-              visões em realidade, entregando projetos que combinam inovação, sustentabilidade e
-              perfeição nos detalhes.
+            <p>
+              Nossa equipe acompanha o cliente em todas as etapas — consultoria, projeto, execução e
+              entrega — para transformar ideias em casas e espaços que fazem sentido para quem vive
+              neles.
             </p>
+          </FadeIn>
 
-            {/* Values */}
-            <div className="flex flex-wrap gap-3 mb-10">
-              {values.map((v, i) => (
-                <motion.div
-                  key={i}
-                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-accent-500/50 transition-all"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                  viewport={{ once: true }}
+          <FadeIn className="mt-12 border-t border-olive/20" delay={0.1}>
+            <ul>
+              {services.map((s) => (
+                <li
+                  key={s}
+                  className="border-b border-olive/20 py-4 text-[12px] tracking-[0.25em] uppercase text-olive"
                 >
-                  <div className="w-2 h-2 rounded-full bg-accent-400 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-semibold text-white">{v.title}</p>
-                    <p className="text-xs text-white/50">{v.desc}</p>
-                  </div>
-                </motion.div>
+                  {s}
+                </li>
               ))}
-            </div>
-
-            <motion.a
-              href="https://wa.me/5548988285002?text=Olá! Gostaria de conhecer mais sobre Danilo Esmeraldino."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-accent-600 hover:bg-accent-500 text-white px-8 py-4 rounded-full font-semibold text-base transition-colors"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Fale Conosco
-            </motion.a>
-          </motion.div>
-
-          {/* Right - Info cards */}
-          <motion.div
-            className="grid grid-cols-2 gap-5"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true, margin: '-80px' }}
-          >
-            {cards.map((item, i) => {
-              const Icon = item.icon
-              return (
-                <motion.div
-                  key={i}
-                  className="bg-white/5 backdrop-blur-sm p-7 rounded-2xl border border-white/10 hover:border-accent-500/40 hover:bg-white/8 text-center transition-all"
-                  whileHover={{ y: -5 }}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="w-12 h-12 bg-accent-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Icon size={22} className="text-white" />
-                  </div>
-                  <h4 className="font-bold text-base mb-1">{item.title}</h4>
-                  <p className="text-white/50 text-sm">{item.desc}</p>
-                </motion.div>
-              )
-            })}
-          </motion.div>
+            </ul>
+          </FadeIn>
         </div>
-
-        {/* CTA Banner */}
-        <motion.div
-          className="mt-24 rounded-3xl bg-gradient-to-r from-accent-700 to-accent-600 p-10 md:p-14 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true, margin: '-80px' }}
-        >
-          <h3 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-            Pronto para Começar?
-          </h3>
-          <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-            Solicite uma consulta gratuita e descubra como podemos transformar seu projeto em
-            realidade.
-          </p>
-          <motion.a
-            href="https://wa.me/5548988285002?text=Olá! Gostaria de solicitar uma consulta gratuita."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-accent-700 px-8 py-4 rounded-full font-bold text-base hover:bg-primary-100 transition-colors shadow-lg"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Consulta Gratuita
-          </motion.a>
-        </motion.div>
       </div>
     </section>
   )
