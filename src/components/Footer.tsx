@@ -1,13 +1,5 @@
 import FadeIn from './FadeIn'
-
-const social = [
-  { label: 'Instagram', url: 'https://instagram.com/daniloesmeraldino' },
-  { label: 'Facebook', url: 'https://facebook.com/notivuss/' },
-  {
-    label: 'LinkedIn',
-    url: 'https://linkedin.com/in/danilo-de-pieri-esmeraldino-647876118',
-  },
-]
+import { social } from '../constants/social'
 
 const WHATSAPP =
   'https://wa.me/5548988285002?text=Olá! Gostaria de conversar sobre um projeto.'

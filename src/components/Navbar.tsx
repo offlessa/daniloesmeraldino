@@ -1,14 +1,37 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
+import { social } from '../constants/social'
+import { FILTER_EVENT, type ProjectFilter } from './Portfolio'
 
 const navItems = [
   { label: 'Projetos', id: 'portfolio' },
   { label: 'Processo', id: 'process' },
   { label: 'Sobre', id: 'about' },
   { label: 'Depoimentos', id: 'testimonials' },
+]
+
+// Menu em tela cheia: projetos à esquerda, demais seções à direita
+const projectLinks: { label: string; filter: ProjectFilter }[] = [
+  { label: 'Residencial', filter: 'residencial' },
+  { label: 'Comercial', filter: 'comercial' },
+  { label: 'Interiores', filter: 'interiores' },
+  { label: 'Concluídos', filter: 'concluido' },
+  { label: 'Em andamento', filter: 'andamento' },
+]
+
+const menuItems = [
+  { label: 'Escritório', id: 'about' },
+  { label: 'Processo', id: 'process' },
+  { label: 'Depoimentos', id: 'testimonials' },
   { label: 'Contato', id: 'contact' },
 ]
+
+const SOCIAL_ICON = { Instagram, Facebook, LinkedIn: Linkedin }
+
+const MENU_TITLE =
+  'text-3xl sm:text-4xl lg:text-5xl font-medium tracking-[0.12em] uppercase text-sand-light hover:text-white transition-colors'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -23,6 +46,11 @@ export default function Navbar() {
   const scrollToSection = (id: string) => {
     setIsOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const showProjects = (filter: ProjectFilter) => {
+    window.dispatchEvent(new CustomEvent(FILTER_EVENT, { detail: filter }))
+    scrollToSection('portfolio')
   }
 
   return (
@@ -52,7 +80,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-10">
             <nav className="hidden lg:flex items-center gap-9">
-              {navItems.slice(0, 4).map((item) => (
+              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
@@ -73,25 +101,13 @@ export default function Navbar() {
 
             {/* Botão do menu */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
-              className="relative z-[60] w-12 h-12 border border-sand bg-white flex flex-col items-center justify-center gap-[7px]"
+              onClick={() => setIsOpen(true)}
+              aria-label="Abrir menu"
+              className="w-12 h-12 border border-sand bg-white flex flex-col items-center justify-center gap-[7px]"
             >
-              <span
-                className={`block h-px w-6 bg-olive transition-transform duration-300 ${
-                  isOpen ? 'translate-y-[8px] rotate-45' : ''
-                }`}
-              />
-              <span
-                className={`block h-px w-4 self-end mr-3 bg-olive transition-opacity duration-300 ${
-                  isOpen ? 'opacity-0' : ''
-                }`}
-              />
-              <span
-                className={`block h-px w-6 bg-olive transition-transform duration-300 ${
-                  isOpen ? '-translate-y-[8px] -rotate-45' : ''
-                }`}
-              />
+              <span className="block h-px w-6 bg-olive" />
+              <span className="block h-px w-4 self-end mr-3 bg-olive" />
+              <span className="block h-px w-6 bg-olive" />
             </button>
           </div>
         </div>
@@ -107,40 +123,63 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="min-h-full grid lg:grid-cols-12 gap-12 px-6 sm:px-10 lg:px-20 pt-36 pb-16">
-              <ul className="lg:col-span-7 space-y-2">
-                {navItems.map((item) => (
-                  <li key={item.id}>
-                    <button
-                      onClick={() => scrollToSection(item.id)}
-                      className="py-2 font-serif text-4xl sm:text-6xl text-sand-light hover:text-white transition-colors"
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <button
+              onClick={() => setIsOpen(false)}
+              aria-label="Fechar menu"
+              className="absolute top-6 right-6 sm:right-10 lg:right-20 w-12 h-12 border border-sand/50 text-sand-light flex items-center justify-center hover:border-sand-light transition-colors"
+            >
+              <X className="w-5 h-5" strokeWidth={1.25} />
+            </button>
 
-              <motion.div
-                className="lg:col-span-4 lg:col-start-9 self-end space-y-8 text-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-              >
+            <div className="min-h-full flex flex-col px-6 sm:px-10 lg:px-20 pt-36 pb-12">
+              <div className="flex-1 grid md:grid-cols-2 gap-16 md:gap-8 content-center text-center max-w-5xl w-full mx-auto">
+                {/* Projetos e seus grupos */}
                 <div>
-                  <p className="text-[10px] tracking-[0.35em] uppercase text-sand/50 mb-2">Contato</p>
-                  <p className="text-sand-light">(48) 98828-5002</p>
-                  <p className="text-sand-light">danilo.esmeraldino@gmail.com.br</p>
+                  <button onClick={() => showProjects('todos')} className={MENU_TITLE}>
+                    Projetos
+                  </button>
+                  <ul className="mt-8 space-y-4">
+                    {projectLinks.map((item) => (
+                      <li key={item.filter}>
+                        <button
+                          onClick={() => showProjects(item.filter)}
+                          className="text-xs sm:text-sm tracking-[0.3em] uppercase text-sand hover:text-white transition-colors"
+                        >
+                          {item.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div>
-                  <p className="text-[10px] tracking-[0.35em] uppercase text-sand/50 mb-2">Estúdio</p>
-                  <p className="text-sand-light">
-                    R. Padre Geraldo Spettmann, 326 — sala B
-                    <br />
-                    Humaitá, Tubarão — SC
-                  </p>
-                </div>
-              </motion.div>
+
+                <ul className="space-y-7 md:space-y-9">
+                  {menuItems.map((item) => (
+                    <li key={item.id}>
+                      <button onClick={() => scrollToSection(item.id)} className={MENU_TITLE}>
+                        {item.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-16 flex justify-center gap-5">
+                {social.map((s) => {
+                  const Icon = SOCIAL_ICON[s.label]
+                  return (
+                    <a
+                      key={s.label}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="w-10 h-10 rounded-full bg-sand/20 text-sand-light flex items-center justify-center hover:bg-sand hover:text-olive transition-colors"
+                    >
+                      <Icon className="w-4 h-4" strokeWidth={1.75} />
+                    </a>
+                  )
+                })}
+              </div>
             </div>
           </motion.nav>
         )}

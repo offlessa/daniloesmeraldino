@@ -14,10 +14,6 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: INTRO_DELAY, duration: 1, ease: EASE_OUT }}
       >
-        <p className="text-[11px] tracking-[0.35em] uppercase text-olive-light mb-10">
-          Arquitetura · Construção · Interiores
-        </p>
-
         <h1 className="font-serif text-[2.75rem] sm:text-6xl xl:text-7xl leading-[1.05] text-olive">
           Arquitetura que <em className="text-olive-light">traduz quem</em> você é.
         </h1>
