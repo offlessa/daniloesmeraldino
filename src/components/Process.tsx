@@ -8,15 +8,35 @@ const steps = [
   },
   {
     title: 'Projeto',
-    description: 'Estudo, apresentação 3D e projeto executivo com orçamento detalhado de cada etapa.',
+    description: 'Arquitetura, projetos complementares e interiores desenvolvidos juntos, com apresentação 3D e aprovação na prefeitura.',
   },
   {
     title: 'Execução',
-    description: 'Obra conduzida pela mesma equipe que desenhou, com cronograma e controle de qualidade.',
+    description: 'Obra acompanhada pela mesma equipe que desenhou, com cronograma e controle de qualidade.',
   },
   {
     title: 'Entrega',
     description: 'Inspeção final, entrega formal e suporte pós-obra para que a casa siga como foi pensada.',
+  },
+]
+
+// Tudo o que o estúdio entrega dentro de um mesmo acompanhamento
+const deliverables = [
+  {
+    group: 'Projetos',
+    items: [
+      'Arquitetônico',
+      'Estrutural',
+      'Hidrossanitário',
+      'Elétrico',
+      'Comunicação',
+      'Interiores',
+      'Paisagismo',
+    ],
+  },
+  {
+    group: 'Acompanhamento',
+    items: ['Aprovação na prefeitura', 'Curadoria', 'Acompanhamento de obra'],
   },
 ]
 
@@ -37,6 +57,36 @@ export default function Process() {
             <p className="mt-4 text-primary-600 leading-relaxed">{step.description}</p>
           </FadeIn>
         ))}
+      </div>
+
+      <div className="mt-28 lg:mt-36 grid lg:grid-cols-12 gap-12 lg:gap-8">
+        <FadeIn className="lg:col-span-4">
+          <h3 className="font-serif text-3xl sm:text-4xl leading-tight text-olive">
+            Todos os projetos <em className="text-olive-light">da sua obra</em>
+          </h3>
+          <p className="mt-6 max-w-sm text-primary-600 leading-relaxed">
+            Um só escritório cuida de cada disciplina, já compatibilizadas entre si — menos
+            fornecedores para coordenar e nenhuma surpresa no canteiro.
+          </p>
+        </FadeIn>
+
+        <div className="lg:col-span-7 lg:col-start-6 grid sm:grid-cols-2 gap-12 sm:gap-10">
+          {deliverables.map((d, gi) => (
+            <FadeIn key={d.group} delay={0.1 + gi * 0.1}>
+              <p className="text-[10px] tracking-[0.35em] uppercase text-olive-light">{d.group}</p>
+              <ul className="mt-4 border-t border-olive/25">
+                {d.items.map((item) => (
+                  <li
+                    key={item}
+                    className="border-b border-olive/25 py-4 text-[11px] tracking-[0.3em] uppercase text-olive"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </FadeIn>
+          ))}
+        </div>
       </div>
     </section>
   )
