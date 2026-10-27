@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Preloader from './components/Preloader'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -7,21 +8,42 @@ import Process from './components/Process'
 import About from './components/About'
 import Testimonials from './components/Testimonials'
 import Footer from './components/Footer'
+import ProjectsPage from './pages/ProjectsPage'
+import { INTRO_DELAY } from './constants/motion'
+
+const isProjectsPage = window.location.pathname.replace(/\/$/, '') === '/projetos'
+
+function Home() {
+  // Vindo de outra página com /#secao: rola até ela quando a abertura terminar
+  useEffect(() => {
+    const id = window.location.hash.slice(1)
+    if (!id) return
+    const t = setTimeout(
+      () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }),
+      INTRO_DELAY * 1000
+    )
+    return () => clearTimeout(t)
+  }, [])
+
+  return (
+    <main className="relative w-full overflow-hidden bg-white">
+      <Hero />
+      <Manifesto />
+      <Portfolio />
+      <Process />
+      <About />
+      <Testimonials />
+      <Footer />
+    </main>
+  )
+}
 
 function App() {
   return (
     <>
       <Preloader />
       <Navbar />
-      <main className="relative w-full overflow-hidden bg-white">
-        <Hero />
-        <Manifesto />
-        <Portfolio />
-        <Process />
-        <About />
-        <Testimonials />
-        <Footer />
-      </main>
+      {isProjectsPage ? <ProjectsPage /> : <Home />}
     </>
   )
 }

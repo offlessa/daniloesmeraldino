@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
 import { social } from '../constants/social'
-import { FILTER_EVENT, type ProjectFilter } from './Portfolio'
+import { projectsUrl, type ProjectFilter } from '../data/projects'
 
 const navItems = [
   { label: 'Projetos', id: 'portfolio' },
@@ -45,12 +45,14 @@ export default function Navbar() {
 
   const scrollToSection = (id: string) => {
     setIsOpen(false)
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    const el = document.getElementById(id)
+    // Fora da página inicial (ex.: /projetos), volta para ela já na seção
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    else window.location.href = id === 'hero' ? '/' : `/#${id}`
   }
 
   const showProjects = (filter: ProjectFilter) => {
-    window.dispatchEvent(new CustomEvent(FILTER_EVENT, { detail: filter }))
-    scrollToSection('portfolio')
+    window.location.href = projectsUrl(filter)
   }
 
   return (

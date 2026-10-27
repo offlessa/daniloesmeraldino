@@ -1,7 +1,21 @@
+import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { INTRO_DELAY, EASE_OUT } from '../constants/motion'
 
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [playing, setPlaying] = useState(false)
+
+  const playTour = () => {
+    // A foto continua visível até o vídeo realmente começar
+    videoRef.current?.play().then(() => setPlaying(true)).catch(() => {})
+  }
+
+  const pauseTour = () => {
+    setPlaying(false)
+    videoRef.current?.pause()
+  }
+
   return (
     <section
       id="hero"
@@ -50,11 +64,26 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: INTRO_DELAY + 0.15, duration: 1.2 }}
+          onMouseEnter={playTour}
+          onMouseLeave={pauseTour}
         >
           <img
             src="/images/web/hero-background.jpg"
             alt="Casa Lago — Estúdio Danilo Esmeraldino"
             className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Tour da Casa Lago: só carrega e toca com o mouse sobre a foto */}
+          <video
+            ref={videoRef}
+            src="/images/web/casa-lago-tour.mp4"
+            muted
+            loop
+            playsInline
+            preload="none"
+            aria-hidden
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              playing ? 'opacity-100' : 'opacity-0'
+            }`}
           />
           <p className="absolute bottom-0 right-0 bg-white px-5 py-3 text-[10px] tracking-[0.3em] uppercase text-olive">
             Casa Lago · 2024
