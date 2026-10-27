@@ -21,19 +21,14 @@ export default function Manifesto() {
         <div className="lg:col-span-7 lg:col-start-6">
           <FadeIn>
             <p className="font-serif text-2xl sm:text-[1.7rem] leading-[1.75] text-primary-700">
-              Danilo Esmeraldino é um escritório de arquitetura e construção de alto padrão que
-              nasceu em Tubarão, Santa Catarina. Desenvolvemos projetos residenciais, comerciais e
-              de interiores pensados em cada detalhe — da concepção à entrega da obra. Acreditamos
-              em fachadas marcantes, espaços funcionais e acabamentos que traduzem a identidade de
-              cada cliente, unindo projeto e execução sob um mesmo olhar. Atendemos em{' '}
+              Escritório de arquitetura e engenharia especializado em projetos residenciais e
+              comerciais sob medida. Integramos projeto arquitetônico, projetos complementares e
+              design de interiores sob um mesmo acompanhamento, do primeiro traço à obra entregue.
+              Presença em{' '}
               <a href="#contact" className="link-underline">
-                Tubarão
-              </a>{' '}
-              e em toda a{' '}
-              <a href="#contact" className="link-underline">
-                região sul de Santa Catarina
+                Santa Catarina e Rio Grande do Sul
               </a>
-              .
+              , com atendimento presencial na região e remoto para todo o Brasil.
             </p>
           </FadeIn>
 

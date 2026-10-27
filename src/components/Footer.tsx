@@ -1,8 +1,7 @@
 import FadeIn from './FadeIn'
-import { social } from '../constants/social'
+import { social, whatsappUrl } from '../constants/social'
 
-const WHATSAPP =
-  'https://wa.me/5548988285002?text=Olá! Gostaria de conversar sobre um projeto.'
+const WHATSAPP = whatsappUrl('Olá! Gostaria de conversar sobre um projeto.')
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()

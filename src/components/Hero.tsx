@@ -33,8 +33,8 @@ export default function Hero() {
         </h1>
 
         <p className="mt-10 max-w-md text-base sm:text-lg leading-relaxed text-primary-700">
-          Projetos residenciais, comerciais e de interiores de alto padrão em Tubarão — SC, da
-          concepção à entrega da obra.
+          Projetos residenciais e comerciais sob medida — arquitetura, projetos complementares e
+          interiores sob um mesmo acompanhamento, do primeiro traço à obra entregue.
         </p>
 
         <div className="mt-12 flex flex-wrap items-center gap-8">

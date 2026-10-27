@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
 import { social } from '../constants/social'
 import { projectsUrl, type ProjectFilter } from '../data/projects'
+import QuoteModal from './QuoteModal'
 
 const navItems = [
   { label: 'Projetos', id: 'portfolio' },
@@ -36,6 +37,8 @@ const MENU_TITLE =
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [quoteOpen, setQuoteOpen] = useState(false)
+  const closeQuote = useCallback(() => setQuoteOpen(false), [])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40)
@@ -95,7 +98,7 @@ export default function Navbar() {
             </nav>
 
             <button
-              onClick={() => scrollToSection('contact')}
+              onClick={() => setQuoteOpen(true)}
               className="hidden md:inline-flex text-[11px] tracking-[0.3em] uppercase bg-olive text-sand-light px-6 py-3 hover:bg-olive-dark transition-colors"
             >
               Orçamento
@@ -165,7 +168,19 @@ export default function Navbar() {
                 </ul>
               </div>
 
-              <div className="mt-16 flex justify-center gap-5">
+              <div className="mt-16 flex justify-center">
+                <button
+                  onClick={() => {
+                    setIsOpen(false)
+                    setQuoteOpen(true)
+                  }}
+                  className="border border-sand/50 px-8 py-4 text-[11px] tracking-[0.3em] uppercase text-sand-light hover:bg-sand-light hover:text-olive transition-colors"
+                >
+                  Solicitar orçamento
+                </button>
+              </div>
+
+              <div className="mt-10 flex justify-center gap-5">
                 {social.map((s) => {
                   const Icon = SOCIAL_ICON[s.label]
                   return (
@@ -186,6 +201,8 @@ export default function Navbar() {
           </motion.nav>
         )}
       </AnimatePresence>
+
+      <QuoteModal open={quoteOpen} onClose={closeQuote} />
     </>
   )
 }
