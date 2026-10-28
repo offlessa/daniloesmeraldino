@@ -8,10 +8,11 @@ import Process from './components/Process'
 import About from './components/About'
 import Testimonials from './components/Testimonials'
 import Footer from './components/Footer'
+import WhatsAppButton from './components/WhatsAppButton'
 import ProjectsPage from './pages/ProjectsPage'
+import ProjectPage from './pages/ProjectPage'
 import { INTRO_DELAY } from './constants/motion'
-
-const isProjectsPage = window.location.pathname.replace(/\/$/, '') === '/projetos'
+import { route, IS_HOME } from './route'
 
 function Home() {
   // Vindo de outra página com /#secao: rola até ela quando a abertura terminar
@@ -41,9 +42,16 @@ function Home() {
 function App() {
   return (
     <>
-      <Preloader />
+      {IS_HOME && <Preloader />}
       <Navbar />
-      {isProjectsPage ? <ProjectsPage /> : <Home />}
+      {route.page === 'project' ? (
+        <ProjectPage slug={route.slug} />
+      ) : route.page === 'projects' ? (
+        <ProjectsPage />
+      ) : (
+        <Home />
+      )}
+      <WhatsAppButton />
     </>
   )
 }

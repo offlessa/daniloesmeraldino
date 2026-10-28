@@ -15,6 +15,12 @@ export interface Project {
   image: string
   /** Enquadramento da foto no recorte (CSS object-position) */
   imagePosition?: string
+  /** Cidade e estado, ex.: 'Tubarão, SC' — também posiciona o mapa */
+  location?: string
+  /** Área construída, ex.: '320 m²' */
+  area?: string
+  /** Texto de apresentação da página do projeto (parágrafos separados por linha em branco) */
+  description?: string
 }
 
 export const projects: Project[] = [
@@ -40,8 +46,9 @@ export const projects: Project[] = [
     type: 'residencial',
     year: '',
     status: 'concluido',
-    image: '/images/web/portfolio-casa-cocal.jpg',
+    image: '/images/web/portfolio-casa-cocal-entrada.jpg',
     imagePosition: '50% 45%',
+    location: 'Cocal do Sul, SC',
   },
   {
     title: 'Casa Arcos',
@@ -75,6 +82,7 @@ export const projects: Project[] = [
     year: '',
     status: 'concluido',
     image: '/images/web/portfolio-casa-aguiar.jpg',
+    location: 'Biguaçu, SC',
   },
   {
     title: 'Casa Azeviche',
@@ -146,3 +154,17 @@ export const matches = (p: Project, filter: ProjectFilter) =>
 /** Endereço da página de projetos, já filtrada quando necessário */
 export const projectsUrl = (filter: ProjectFilter = 'todos') =>
   filter === 'todos' ? '/projetos' : `/projetos?filtro=${filter}`
+
+/** 'Casa Araucária' → 'casa-araucaria' */
+export const slugify = (title: string) =>
+  title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+
+/** Endereço da página de um projeto */
+export const projectUrl = (p: Project) => `/projetos/${slugify(p.title)}`
+
+export const findProject = (slug: string) => projects.find((p) => slugify(p.title) === slug)

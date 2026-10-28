@@ -10,9 +10,12 @@ const PROJECT_TYPES = [
   { label: 'Reforma', phrase: 'projeto de reforma' },
 ]
 
-const buildMessage = (name: string, type: string, location: string) => {
+const buildMessage = (name: string, type: string, location: string, reference?: string) => {
   const phrase = PROJECT_TYPES.find((t) => t.label === type)?.phrase ?? 'projeto'
-  return `Olá, meu nome é ${name.trim()}, vim através do site para fazer meu ${phrase} em ${location.trim()}. Gostaria de um orçamento!`
+  const origin = reference
+    ? `vi o projeto ${reference} no site e quero fazer meu ${phrase} em ${location.trim()} nesse estilo`
+    : `vim através do site para fazer meu ${phrase} em ${location.trim()}`
+  return `Olá, meu nome é ${name.trim()}, ${origin}. Gostaria de um orçamento!`
 }
 
 const FIELD =
@@ -22,12 +25,16 @@ const LABEL = 'block text-[10px] tracking-[0.3em] uppercase text-olive-light'
 interface QuoteModalProps {
   open: boolean
   onClose: () => void
+  /** Projeto que inspirou o pedido (aberto pela página de uma casa) */
+  reference?: { title: string; type: string }
 }
 
 /** Formulário de orçamento: monta a mensagem e envia pelo WhatsApp do estúdio. */
-export default function QuoteModal({ open, onClose }: QuoteModalProps) {
+export default function QuoteModal({ open, onClose, reference }: QuoteModalProps) {
   const [name, setName] = useState('')
-  const [type, setType] = useState('')
+  const [type, setType] = useState(
+    () => PROJECT_TYPES.find((t) => t.label.toLowerCase() === reference?.type)?.label ?? ''
+  )
   const [location, setLocation] = useState('')
   const [message, setMessage] = useState('')
   const messageRef = useRef<HTMLTextAreaElement>(null)
@@ -48,7 +55,7 @@ export default function QuoteModal({ open, onClose }: QuoteModalProps) {
   const generate = (e: React.FormEvent) => {
     e.preventDefault()
     if (!filled) return
-    setMessage(buildMessage(name, type, location))
+    setMessage(buildMessage(name, type, location, reference?.title))
     // Leva o foco para a mensagem, que já pode ser editada
     setTimeout(() => messageRef.current?.focus(), 50)
   }
@@ -87,6 +94,11 @@ export default function QuoteModal({ open, onClose }: QuoteModalProps) {
             <h2 id="quote-title" className="mt-3 font-serif text-3xl sm:text-4xl text-olive">
               Vamos conversar sobre o seu <em className="text-olive-light">projeto</em>
             </h2>
+            {reference && (
+              <p className="mt-4 text-sm text-primary-600">
+                Projeto de referência: <span className="text-olive">{reference.title}</span>
+              </p>
+            )}
 
             <form onSubmit={generate} className="mt-10 space-y-8">
               <label className="block">

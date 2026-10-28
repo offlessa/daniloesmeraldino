@@ -2,29 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import SectionHeader from './SectionHeader'
 import ParallaxRect from './ParallaxRect'
-
-const testimonials = [
-  {
-    name: 'Mayara Machado',
-    company: '',
-    text: 'O Danilo é um ótimo profissional! Pensa nos detalhes de tudo pra que a casa fique linda e funcional. Os projetos tem a identidade dele, a imponência das fachadas e detalhes de luxo e beleza. O projeto da nossa casa ficou lindo demais!',
-  },
-  {
-    name: 'Gisele Margotti',
-    company: 'Casa Pietra',
-    text: 'Só elogios... atendimento top e de muita qualidade. Parabéns pelo trabalho! Projetos lindos e diferenciados! Um escritório que dá vida à nossos sonhos!',
-  },
-  {
-    name: 'Didiane Almeida',
-    company: '',
-    text: 'Simplesmente o melhor, arrasa nas suas edificações, sabe transformar as ideias dos seus clientes em realidade',
-  },
-  {
-    name: 'Mirely Fernandes',
-    company: '',
-    text: 'Super atenciosos e cuidadosos em todos detalhes, ótimos profissionais ❤️',
-  },
-]
+import { testimonials } from '../data/testimonials'
 
 const INTERVAL = 8000
 

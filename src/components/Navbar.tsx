@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
+import { IS_HOME } from '../route'
 import { social } from '../constants/social'
 import { projectsUrl, type ProjectFilter } from '../data/projects'
 import QuoteModal from './QuoteModal'
@@ -66,7 +67,7 @@ export default function Navbar() {
         }`}
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: INTRO_DELAY, duration: 0.8 }}
+        transition={{ delay: IS_HOME ? INTRO_DELAY : 0, duration: 0.8 }}
       >
         <div
           className={`flex justify-between items-center px-6 sm:px-10 lg:px-20 transition-all duration-500 ${

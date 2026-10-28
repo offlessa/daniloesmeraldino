@@ -3,17 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SectionHeader from './SectionHeader'
 import FadeIn from './FadeIn'
 import { EASE_OUT } from '../constants/motion'
-import { projects, STATUS_LABEL, projectsUrl } from '../data/projects'
+import { projects, STATUS_LABEL, projectsUrl, projectUrl } from '../data/projects'
 
 const INTERVAL = 6000
 const SWIPE = 60
+
+// Só estas aparecem no carrossel; as demais ficam em "Todos os projetos"
+const FEATURED = ['Casa Lago', 'Casa JE']
+const featured = projects.filter((p) => FEATURED.includes(p.title))
 
 export default function Portfolio() {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
 
-  const total = projects.length
-  const project = projects[current]
+  const total = featured.length
+  const project = featured[current]
 
   const go = (dir: number) => setCurrent((c) => (c + dir + total) % total)
 
@@ -97,6 +101,13 @@ export default function Portfolio() {
                     {project.category}
                     {project.year && ` · ${project.year}`}
                   </p>
+                  <a
+                    href={projectUrl(project)}
+                    className="group mt-6 inline-flex items-center gap-4 text-[11px] tracking-[0.3em] uppercase text-olive"
+                  >
+                    Ver projeto
+                    <span className="block w-8 h-px bg-olive group-hover:w-14 transition-all duration-500" />
+                  </a>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -108,7 +119,7 @@ export default function Portfolio() {
                   <span className="text-olive-light/60"> / {String(total).padStart(2, '0')}</span>
                 </span>
                 <div className="flex items-center gap-1" role="tablist" aria-label="Escolher projeto">
-                  {projects.map((p, i) => {
+                  {featured.map((p, i) => {
                     const active = i === current
                     return (
                       <button

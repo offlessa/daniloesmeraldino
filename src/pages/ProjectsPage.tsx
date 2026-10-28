@@ -8,19 +8,56 @@ import {
   STATUS_LABEL,
   isProjectFilter,
   matches,
-  projectsUrl,
+  projectUrl,
+  slugify,
   type Project,
   type ProjectFilter,
 } from '../data/projects'
+import { DEFAULT_LOCATION } from '../data/locations'
 
-const filterFromUrl = (): ProjectFilter => {
-  const f = new URLSearchParams(window.location.search).get('filtro')
-  return isProjectFilter(f) ? f : 'todos'
+const ALL_PLACES = 'todas'
+
+const cityOf = (p: Project) => (p.location ?? DEFAULT_LOCATION).split(',')[0].trim()
+
+// Cidades com projetos, da que tem mais para a que tem menos
+const places = Object.entries(
+  projects.reduce<Record<string, number>>((acc, p) => {
+    const city = cityOf(p)
+    acc[city] = (acc[city] ?? 0) + 1
+    return acc
+  }, {})
+)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .map(([city]) => ({ id: slugify(city), label: city }))
+
+const filtersFromUrl = () => {
+  const params = new URLSearchParams(window.location.search)
+  const f = params.get('filtro')
+  const local = params.get('local')
+  return {
+    filter: isProjectFilter(f) ? f : ('todos' as ProjectFilter),
+    place: places.some((p) => p.id === local) ? local! : ALL_PLACES,
+  }
 }
+
+const urlFor = (filter: ProjectFilter, place: string) => {
+  const params = new URLSearchParams()
+  if (filter !== 'todos') params.set('filtro', filter)
+  if (place !== ALL_PLACES) params.set('local', place)
+  const qs = params.toString()
+  return qs ? `/projetos?${qs}` : '/projetos'
+}
+
+const chipClass = (active: boolean) =>
+  `px-5 py-3 border text-[11px] tracking-[0.25em] uppercase transition-colors ${
+    active
+      ? 'border-olive text-olive'
+      : 'border-transparent bg-sand-light text-primary-600 hover:text-olive'
+  }`
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="group">
+    <a href={projectUrl(project)} className="group block">
       <div className="relative overflow-hidden aspect-[16/9] bg-sand-light">
         <img
           src={project.image}
@@ -43,6 +80,8 @@ function ProjectCard({ project }: { project: Project }) {
             {STATUS_LABEL[project.status]}
           </span>
           <span>{project.category}</span>
+          <span className="hidden sm:inline text-olive/30">|</span>
+          <span>{cityOf(project)}</span>
           {project.year && (
             <>
               <span className="hidden sm:inline text-olive/30">|</span>
@@ -51,26 +90,29 @@ function ProjectCard({ project }: { project: Project }) {
           )}
         </div>
       </div>
-    </div>
+    </a>
   )
 }
 
 export default function ProjectsPage() {
-  const [filter, setFilter] = useState<ProjectFilter>(filterFromUrl)
+  const [{ filter, place }, setFilters] = useState(filtersFromUrl)
 
-  // Mantém o filtro no endereço (dá para compartilhar o link) e acompanha o botão "voltar"
+  // Mantém os filtros no endereço (dá para compartilhar o link) e acompanha o botão "voltar"
   useEffect(() => {
-    const onPop = () => setFilter(filterFromUrl())
+    const onPop = () => setFilters(filtersFromUrl())
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  const select = (id: ProjectFilter) => {
-    setFilter(id)
-    window.history.pushState(null, '', projectsUrl(id))
+  const select = (next: { filter?: ProjectFilter; place?: string }) => {
+    const value = { filter: next.filter ?? filter, place: next.place ?? place }
+    setFilters(value)
+    window.history.pushState(null, '', urlFor(value.filter, value.place))
   }
 
-  const visible = projects.filter((p) => matches(p, filter))
+  const visible = projects.filter(
+    (p) => matches(p, filter) && (place === ALL_PLACES || slugify(cityOf(p)) === place)
+  )
 
   return (
     <main className="relative w-full overflow-hidden bg-white">
@@ -93,30 +135,43 @@ export default function ProjectsPage() {
             aria-label="Filtrar projetos"
             className="flex flex-wrap justify-center gap-3 sm:gap-4"
           >
-            {FILTERS.map((f) => {
-              const active = filter === f.id
-              return (
-                <button
-                  key={f.id}
-                  aria-pressed={active}
-                  onClick={() => select(f.id)}
-                  className={`px-5 py-3 border text-[11px] tracking-[0.25em] uppercase transition-colors ${
-                    active
-                      ? 'border-olive text-olive'
-                      : 'border-transparent bg-sand-light text-primary-600 hover:text-olive'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              )
-            })}
+            {FILTERS.map((f) => (
+              <button
+                key={f.id}
+                aria-pressed={filter === f.id}
+                onClick={() => select({ filter: f.id })}
+                className={chipClass(filter === f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div
+            role="group"
+            aria-label="Filtrar por localização"
+            className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+          >
+            <span className="w-full sm:w-auto text-center text-[10px] tracking-[0.35em] uppercase text-olive-light sm:mr-2">
+              Localização
+            </span>
+            {[{ id: ALL_PLACES, label: 'Todas' }, ...places].map((p) => (
+              <button
+                key={p.id}
+                aria-pressed={place === p.id}
+                onClick={() => select({ place: p.id })}
+                className={chipClass(place === p.id)}
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
         </FadeIn>
       </section>
 
       <AnimatePresence mode="wait">
         <motion.section
-          key={filter}
+          key={`${filter}-${place}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
