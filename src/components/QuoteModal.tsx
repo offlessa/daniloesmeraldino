@@ -3,18 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import { whatsappUrl } from '../constants/social'
 
+// Dá para escolher mais de um (ex.: residência + interiores, ou casa + espaço comercial)
 const PROJECT_TYPES = [
-  { label: 'Residencial', phrase: 'projeto residencial' },
-  { label: 'Comercial', phrase: 'projeto comercial' },
-  { label: 'Interiores', phrase: 'projeto de interiores' },
-  { label: 'Reforma', phrase: 'projeto de reforma' },
+  { label: 'Residencial', phrase: 'residencial' },
+  { label: 'Comercial', phrase: 'comercial' },
+  { label: 'Interiores', phrase: 'de interiores' },
+  { label: 'Reforma', phrase: 'de reforma' },
 ]
 
-const buildMessage = (name: string, type: string, location: string, reference?: string) => {
-  const phrase = PROJECT_TYPES.find((t) => t.label === type)?.phrase ?? 'projeto'
+/** ['residencial', 'de interiores'] → 'residencial e de interiores' */
+const joinPhrases = (parts: string[]) =>
+  parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join(', ')} e ${parts[parts.length - 1]}`
+
+const buildMessage = (name: string, types: string[], location: string, reference?: string) => {
+  // Mantém a ordem da lista, independente da ordem dos cliques
+  const phrases = PROJECT_TYPES.filter((t) => types.includes(t.label)).map((t) => t.phrase)
+  const what = `projeto ${joinPhrases(phrases)}`
   const origin = reference
-    ? `vi o projeto ${reference} no site e quero fazer meu ${phrase} em ${location.trim()} nesse estilo`
-    : `vim através do site para fazer meu ${phrase} em ${location.trim()}`
+    ? `vi o projeto ${reference} no site e quero fazer meu ${what} em ${location.trim()} nesse estilo`
+    : `vim através do site para fazer meu ${what} em ${location.trim()}`
   return `Olá, meu nome é ${name.trim()}, ${origin}. Gostaria de um orçamento!`
 }
 
@@ -32,14 +39,19 @@ interface QuoteModalProps {
 /** Formulário de orçamento: monta a mensagem e envia pelo WhatsApp do estúdio. */
 export default function QuoteModal({ open, onClose, reference }: QuoteModalProps) {
   const [name, setName] = useState('')
-  const [type, setType] = useState(
-    () => PROJECT_TYPES.find((t) => t.label.toLowerCase() === reference?.type)?.label ?? ''
+  const [types, setTypes] = useState<string[]>(() =>
+    PROJECT_TYPES.filter((t) => t.label.toLowerCase() === reference?.type).map((t) => t.label)
   )
   const [location, setLocation] = useState('')
   const [message, setMessage] = useState('')
   const messageRef = useRef<HTMLTextAreaElement>(null)
 
-  const filled = name.trim() && type && location.trim()
+  const filled = name.trim() && types.length > 0 && location.trim()
+
+  const toggleType = (label: string) =>
+    setTypes((current) =>
+      current.includes(label) ? current.filter((t) => t !== label) : [...current, label]
+    )
 
   useEffect(() => {
     if (!open) return
@@ -55,7 +67,7 @@ export default function QuoteModal({ open, onClose, reference }: QuoteModalProps
   const generate = (e: React.FormEvent) => {
     e.preventDefault()
     if (!filled) return
-    setMessage(buildMessage(name, type, location, reference?.title))
+    setMessage(buildMessage(name, types, location, reference?.title))
     // Leva o foco para a mensagem, que já pode ser editada
     setTimeout(() => messageRef.current?.focus(), 50)
   }
@@ -115,15 +127,16 @@ export default function QuoteModal({ open, onClose, reference }: QuoteModalProps
 
               <fieldset>
                 <legend className={LABEL}>Tipo de projeto</legend>
+                <p className="mt-2 text-sm text-primary-500">Pode marcar mais de um.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {PROJECT_TYPES.map((t) => {
-                    const active = type === t.label
+                    const active = types.includes(t.label)
                     return (
                       <button
                         key={t.label}
                         type="button"
                         aria-pressed={active}
-                        onClick={() => setType(t.label)}
+                        onClick={() => toggleType(t.label)}
                         className={`px-4 py-2.5 border text-[10px] tracking-[0.25em] uppercase transition-colors ${
                           active
                             ? 'bg-olive border-olive text-sand-light'

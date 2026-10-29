@@ -1,9 +1,11 @@
-export type Status = 'concluido' | 'andamento'
+/** andamento = obra em andamento · projeto = ainda no papel · concluido = obra entregue */
+export type Status = 'andamento' | 'projeto' | 'concluido'
 export type ProjectType = 'residencial' | 'comercial' | 'interiores'
 
 export const STATUS_LABEL: Record<Status, string> = {
-  concluido: 'Concluído',
   andamento: 'Em andamento',
+  projeto: 'Em projeto',
+  concluido: 'Concluído',
 }
 
 export interface Project {
@@ -117,6 +119,118 @@ export const projects: Project[] = [
     image: '/images/web/portfolio-casa-amazonita.jpg',
   },
   {
+    title: 'Casa Araçá',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-araca.jpg',
+  },
+  {
+    title: 'Casa Blanc',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-blanc.jpg',
+  },
+  {
+    title: 'Casa Bonsai',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-bonsai.jpg',
+  },
+  {
+    title: 'Casa Bossa Nova',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-bossa-nova.jpg',
+  },
+  {
+    title: 'Casa Granada',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-granada.jpg',
+  },
+  {
+    title: 'Casa Jasmin',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-jasmin.jpg',
+  },
+  {
+    title: 'Casa Levita',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-levita.jpg',
+  },
+  {
+    title: 'Casa My',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-my.jpg',
+  },
+  {
+    title: 'Casa Orion',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-orion.jpg',
+  },
+  {
+    title: 'Casa R',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-r.jpg',
+  },
+  {
+    title: 'Casa Rocha',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-rocha.jpg',
+  },
+  {
+    title: 'Casa Solarium',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-solarium.jpg',
+  },
+  {
+    title: 'Casa Turquesa',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-turquesa.jpg',
+  },
+  {
+    title: 'Casa Ônix',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'andamento',
+    image: '/images/web/portfolio-casa-onix.jpg',
+  },
+  {
     title: 'Casa Iron',
     category: 'Reforma Residencial',
     type: 'residencial',
@@ -134,26 +248,50 @@ export const projects: Project[] = [
   },
 ]
 
-export type ProjectFilter = 'todos' | Status | ProjectType
+// Filtros da página de projetos: tipo × situação (ex.: comerciais concluídos)
+export type TypeFilter = 'todos' | ProjectType
+export type StatusFilter = 'todos' | Status
+export interface ProjectQuery {
+  tipo: TypeFilter
+  situacao: StatusFilter
+}
 
-export const FILTERS: { id: ProjectFilter; label: string }[] = [
+export const TYPE_FILTERS: { id: TypeFilter; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'residencial', label: 'Residencial' },
   { id: 'comercial', label: 'Comercial' },
   { id: 'interiores', label: 'Interiores' },
-  { id: 'concluido', label: 'Concluídos' },
-  { id: 'andamento', label: 'Em andamento' },
 ]
 
-export const isProjectFilter = (v: string | null): v is ProjectFilter =>
-  FILTERS.some((f) => f.id === v)
+export const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
+  { id: 'todos', label: 'Todos' },
+  { id: 'andamento', label: 'Em andamento' },
+  { id: 'projeto', label: 'Projetos' },
+  { id: 'concluido', label: 'Concluídos' },
+]
 
-export const matches = (p: Project, filter: ProjectFilter) =>
-  filter === 'todos' || p.status === filter || p.type === filter
+export const isTypeFilter = (v: string | null): v is TypeFilter =>
+  TYPE_FILTERS.some((f) => f.id === v)
+
+export const isStatusFilter = (v: string | null): v is StatusFilter =>
+  STATUS_FILTERS.some((f) => f.id === v)
+
+/**
+ * Interiores não é o tipo da obra: entra toda casa ou loja que tem fotos de interiores
+ * (além dos projetos só de interiores).
+ */
+export const matches = (p: Project, q: ProjectQuery, hasInteriors: boolean) =>
+  (q.situacao === 'todos' || p.status === q.situacao) &&
+  (q.tipo === 'todos' || (q.tipo === 'interiores' ? hasInteriors || p.type === 'interiores' : p.type === q.tipo))
 
 /** Endereço da página de projetos, já filtrada quando necessário */
-export const projectsUrl = (filter: ProjectFilter = 'todos') =>
-  filter === 'todos' ? '/projetos' : `/projetos?filtro=${filter}`
+export const projectsUrl = (q: Partial<ProjectQuery> = {}) => {
+  const params = new URLSearchParams()
+  if (q.tipo && q.tipo !== 'todos') params.set('tipo', q.tipo)
+  if (q.situacao && q.situacao !== 'todos') params.set('situacao', q.situacao)
+  const qs = params.toString()
+  return qs ? `/projetos?${qs}` : '/projetos'
+}
 
 /** 'Casa Araucária' → 'casa-araucaria' */
 export const slugify = (title: string) =>
@@ -166,5 +304,8 @@ export const slugify = (title: string) =>
 
 /** Endereço da página de um projeto */
 export const projectUrl = (p: Project) => `/projetos/${slugify(p.title)}`
+
+/** Âncora da seção de interiores na página do projeto */
+export const INTERIORS_ID = 'interiores'
 
 export const findProject = (slug: string) => projects.find((p) => slugify(p.title) === slug)

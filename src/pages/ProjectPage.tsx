@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
 import Footer from '../components/Footer'
@@ -10,6 +10,7 @@ import { DEFAULT_LOCATION, locate } from '../data/locations'
 import { testimonials } from '../data/testimonials'
 import {
   projects,
+  INTERIORS_ID,
   STATUS_LABEL,
   projectUrl,
   projectsUrl,
@@ -25,19 +26,20 @@ type Photo = { src: string; w: number; h: number }
  */
 function layoutGallery(photos: Photo[]) {
   const rows: Photo[][] = []
-  let i = 0
+  const rest = [...photos]
   let nextFull = true
-  while (i < photos.length) {
-    const p = photos[i]
+  while (rest.length) {
+    const p = rest.shift()!
     const landscape = p.w > p.h
-    if ((nextFull && landscape) || i === photos.length - 1) {
+    if (!rest.length || (nextFull && landscape)) {
       rows.push([p])
-      i += 1
-    } else {
-      rows.push([p, photos[i + 1]])
-      i += 2
+      nextFull = false
+      continue
     }
-    nextFull = !nextFull
+    // Foto em pé faz par com a próxima foto em pé (mesmo que venha mais adiante)
+    const j = landscape ? 0 : Math.max(0, rest.findIndex((q) => q.h >= q.w))
+    rows.push([p, rest.splice(j, 1)[0]])
+    nextFull = true
   }
   return rows
 }
@@ -168,14 +170,72 @@ function ClientWords({ slug }: { slug: string }) {
   )
 }
 
+/** Linhas da galeria, sem cortar nenhuma foto. */
+function GalleryRows({ rows, alt, onOpen }: { rows: Photo[][]; alt: string; onOpen: (p: Photo) => void }) {
+  return (
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
+      {rows.map((row) =>
+        row.length === 1 ? (
+          <FadeIn key={row[0].src} className={row[0].h > row[0].w ? 'max-w-xl mx-auto' : undefined}>
+            <button onClick={() => onOpen(row[0])} aria-label="Ampliar foto" className="block w-full cursor-zoom-in">
+              <img
+                src={row[0].src}
+                alt={alt}
+                loading="lazy"
+                width={row[0].w}
+                height={row[0].h}
+                className="w-full h-auto"
+              />
+            </button>
+          </FadeIn>
+        ) : (
+          // Larguras proporcionais ao formato de cada foto: mesma altura e nenhuma cortada
+          <div key={row[0].src} className="space-y-6 sm:space-y-0 sm:flex sm:gap-8 sm:items-start">
+            {row.map((photo, i) => (
+              <FadeIn key={photo.src} delay={i * 0.1} style={{ flex: `${photo.w / photo.h} 1 0%` }}>
+                <button
+                  onClick={() => onOpen(photo)}
+                  aria-label="Ampliar foto"
+                  className="block w-full overflow-hidden bg-sand-light cursor-zoom-in"
+                >
+                  <img
+                    src={photo.src}
+                    alt={alt}
+                    loading="lazy"
+                    width={photo.w}
+                    height={photo.h}
+                    className="w-full h-auto transition-transform duration-[1.2s] ease-out hover:scale-[1.03]"
+                  />
+                </button>
+              </FadeIn>
+            ))}
+          </div>
+        )
+      )}
+    </div>
+  )
+}
+
 export default function ProjectPage({ slug }: { slug: string }) {
   const [photoIndex, setPhotoIndex] = useState<number | null>(null)
+
+  // Veio de "Interiores" (…#interiores): desce direto para essa parte
+  useEffect(() => {
+    if (window.location.hash !== `#${INTERIORS_ID}`) return
+    const t = setTimeout(() => document.getElementById(INTERIORS_ID)?.scrollIntoView({ behavior: 'smooth' }), 400)
+    return () => clearTimeout(t)
+  }, [slug])
+
   const index = projects.findIndex((p) => slugify(p.title) === slug)
   if (index < 0) return <NotFound />
 
   const project = projects[index]
   const next: Project = projects[(index + 1) % projects.length]
   const photos = galleries[slug] ?? []
+  const outside = layoutGallery(photos.filter((p) => !p.interior))
+  const inside = layoutGallery(photos.filter((p) => p.interior))
+  // Ordem em que aparecem na página (a tela cheia segue a mesma)
+  const ordered = [...outside.flat(), ...inside.flat()]
   const year = project.year || undefined
   const location = project.location ?? DEFAULT_LOCATION
 
@@ -219,6 +279,14 @@ export default function ProjectPage({ slug }: { slug: string }) {
               <Fact label={project.status === 'concluido' ? 'Conclusão' : 'Ano'} value={year} />
               <Fact label="Projeto" value="Estúdio Danilo Esmeraldino" />
             </dl>
+            {inside.length > 0 && outside.length > 0 && (
+              <a
+                href={`#${INTERIORS_ID}`}
+                className="mt-8 inline-block link-underline text-[11px] tracking-[0.3em] uppercase text-olive"
+              >
+                Ver interiores ↓
+              </a>
+            )}
           </FadeIn>
         </div>
 
@@ -231,51 +299,26 @@ export default function ProjectPage({ slug }: { slug: string }) {
         )}
       </section>
 
-      {/* Galeria */}
-      {photos.length > 0 && (
+      {/* Galeria: fotos da obra e, depois, os interiores */}
+      {ordered.length > 0 && (
         <section className="px-6 sm:px-10 lg:px-20 pb-24 lg:pb-32">
-          <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
-            {layoutGallery(photos).map((row) =>
-              row.length === 1 ? (
-                <FadeIn key={row[0].src}>
-                  <button
-                    onClick={() => setPhotoIndex(photos.indexOf(row[0]))}
-                    aria-label="Ampliar foto"
-                    className="block w-full cursor-zoom-in"
-                  >
-                    <img
-                      src={row[0].src}
-                      alt={project.title}
-                      loading="lazy"
-                      width={row[0].w}
-                      height={row[0].h}
-                      className="w-full h-auto"
-                    />
-                  </button>
-                </FadeIn>
-              ) : (
-                <div key={row[0].src} className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-start">
-                  {row.map((photo, i) => (
-                    <FadeIn key={photo.src} delay={i * 0.1}>
-                      <button
-                        onClick={() => setPhotoIndex(photos.indexOf(photo))}
-                        aria-label="Ampliar foto"
-                        className="block w-full aspect-[4/5] overflow-hidden bg-sand-light cursor-zoom-in"
-                      >
-                        <img
-                          src={photo.src}
-                          alt={project.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-[1.2s] ease-out hover:scale-[1.03]"
-                        />
-                      </button>
-                    </FadeIn>
-                  ))}
-                </div>
-              )
-            )}
-          </div>
-          <Lightbox photos={photos} index={photoIndex} alt={project.title} onChange={setPhotoIndex} />
+          {outside.length > 0 && (
+            <GalleryRows rows={outside} alt={project.title} onOpen={(p) => setPhotoIndex(ordered.indexOf(p))} />
+          )}
+          {inside.length > 0 && (
+            <div id={INTERIORS_ID} className={`scroll-mt-28 ${outside.length > 0 ? 'pt-24 lg:pt-32' : ''}`}>
+              <FadeIn className="max-w-6xl mx-auto mb-12 lg:mb-16 border-t border-olive/15 pt-16 lg:pt-20">
+                <p className="text-[11px] tracking-[0.35em] uppercase text-olive-light">{project.title}</p>
+                <h2 className="mt-4 font-serif text-4xl sm:text-5xl text-olive">Interiores</h2>
+              </FadeIn>
+              <GalleryRows
+                rows={inside}
+                alt={`${project.title} — interiores`}
+                onOpen={(p) => setPhotoIndex(ordered.indexOf(p))}
+              />
+            </div>
+          )}
+          <Lightbox photos={ordered} index={photoIndex} alt={project.title} onChange={setPhotoIndex} />
         </section>
       )}
 

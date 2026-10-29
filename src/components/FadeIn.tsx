@@ -5,13 +5,15 @@ interface FadeInProps {
   children: React.ReactNode
   className?: string
   delay?: number
+  style?: React.CSSProperties
 }
 
 /** Entrada padrão do site: leve subida com fade ao aparecer na tela. */
-export default function FadeIn({ children, className = '', delay = 0 }: FadeInProps) {
+export default function FadeIn({ children, className = '', delay = 0, style }: FadeInProps) {
   return (
     <motion.div
       className={className}
+      style={style}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}

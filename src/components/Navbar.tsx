@@ -4,7 +4,7 @@ import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
 import { IS_HOME } from '../route'
 import { social } from '../constants/social'
-import { projectsUrl, type ProjectFilter } from '../data/projects'
+import { projectsUrl, TYPE_FILTERS, type ProjectQuery } from '../data/projects'
 import QuoteModal from './QuoteModal'
 
 const navItems = [
@@ -14,14 +14,7 @@ const navItems = [
   { label: 'Depoimentos', id: 'testimonials' },
 ]
 
-// Menu em tela cheia: projetos à esquerda, demais seções à direita
-const projectLinks: { label: string; filter: ProjectFilter }[] = [
-  { label: 'Residencial', filter: 'residencial' },
-  { label: 'Comercial', filter: 'comercial' },
-  { label: 'Interiores', filter: 'interiores' },
-  { label: 'Concluídos', filter: 'concluido' },
-  { label: 'Em andamento', filter: 'andamento' },
-]
+// Menu em tela cheia: projetos à esquerda (por tipo; a situação se escolhe na página), demais seções à direita
 
 const menuItems = [
   { label: 'Escritório', id: 'about' },
@@ -55,8 +48,8 @@ export default function Navbar() {
     else window.location.href = id === 'hero' ? '/' : `/#${id}`
   }
 
-  const showProjects = (filter: ProjectFilter) => {
-    window.location.href = projectsUrl(filter)
+  const showProjects = (query: Partial<ProjectQuery> = {}) => {
+    window.location.href = projectsUrl(query)
   }
 
   return (
@@ -141,17 +134,17 @@ export default function Navbar() {
               <div className="flex-1 grid md:grid-cols-2 gap-16 md:gap-8 content-center text-center max-w-5xl w-full mx-auto">
                 {/* Projetos e seus grupos */}
                 <div>
-                  <button onClick={() => showProjects('todos')} className={MENU_TITLE}>
+                  <button onClick={() => showProjects()} className={MENU_TITLE}>
                     Projetos
                   </button>
                   <ul className="mt-8 space-y-4">
-                    {projectLinks.map((item) => (
-                      <li key={item.filter}>
+                    {TYPE_FILTERS.map((type) => (
+                      <li key={type.id}>
                         <button
-                          onClick={() => showProjects(item.filter)}
+                          onClick={() => showProjects({ tipo: type.id })}
                           className="text-xs sm:text-sm tracking-[0.3em] uppercase text-sand hover:text-white transition-colors"
                         >
-                          {item.label}
+                          {type.label}
                         </button>
                       </li>
                     ))}
