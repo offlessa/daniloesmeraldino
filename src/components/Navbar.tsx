@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
-import { IS_HOME } from '../route'
+import { IS_HOME, QUIZ_PATH } from '../route'
 import { social } from '../constants/social'
 import { projectsUrl, TYPE_FILTERS, type ProjectQuery } from '../data/projects'
 import QuoteModal from './QuoteModal'
@@ -149,6 +149,12 @@ export default function Navbar() {
                       </li>
                     ))}
                   </ul>
+                  <a
+                    href={QUIZ_PATH}
+                    className="mt-10 inline-block border-b border-sand/40 pb-1 text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-sand-light hover:border-white hover:text-white transition-colors"
+                  >
+                    Descubra qual casa combina com você →
+                  </a>
                 </div>
 
                 <ul className="space-y-7 md:space-y-9">

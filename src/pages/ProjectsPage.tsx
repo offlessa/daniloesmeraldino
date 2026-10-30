@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Building2, ChevronDown, Home, LayoutGrid, MapPin, Sofa, X } from 'lucide-react'
+import BrickLoader from '../components/BrickLoader'
 import FadeIn from '../components/FadeIn'
 import Footer from '../components/Footer'
 import {
@@ -268,6 +269,7 @@ export default function ProjectsPage() {
             </div>
           ) : (
             <div className="px-6 py-20 text-center">
+              <BrickLoader className="mx-auto mb-10" />
               <p className="font-serif text-2xl sm:text-3xl text-olive">Novos projetos em breve.</p>
               <p className="mt-4 text-primary-600">
                 Quer começar o seu?{' '}

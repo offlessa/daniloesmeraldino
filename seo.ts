@@ -66,6 +66,13 @@ const pages: Page[] = [
       'Residências, espaços comerciais e interiores do Estúdio Danilo Esmeraldino em Tubarão e região — obras entregues e projetos em andamento.',
     image: '/images/og/site.jpg',
   },
+  {
+    path: '/descubra',
+    title: `Qual casa combina com você? | ${BRAND}`,
+    description:
+      'Responda algumas perguntas e descubra o estilo de casa que tem a sua cara — e, se ainda não tiver terreno, qual lote procurar.',
+    image: '/images/og/site.jpg',
+  },
   ...projects.map(projectPage),
 ]
 

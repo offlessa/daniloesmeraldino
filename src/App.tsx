@@ -11,6 +11,8 @@ import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectPage from './pages/ProjectPage'
+import QuizPage from './pages/QuizPage'
+import QuizCta from './components/QuizCta'
 import { INTRO_DELAY } from './constants/motion'
 import { route, IS_HOME } from './route'
 
@@ -32,6 +34,7 @@ function Home() {
       <Manifesto />
       <Portfolio />
       <Process />
+      <QuizCta />
       <About />
       <Testimonials />
       <Footer />
@@ -48,6 +51,8 @@ function App() {
         <ProjectPage slug={route.slug} />
       ) : route.page === 'projects' ? (
         <ProjectsPage />
+      ) : route.page === 'quiz' ? (
+        <QuizPage />
       ) : (
         <Home />
       )}
