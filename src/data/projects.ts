@@ -33,6 +33,7 @@ export const projects: Project[] = [
     year: '2024',
     status: 'concluido',
     image: '/images/web/portfolio-casa-lago.jpg',
+    area: '275,78 m²',
     description:
       'Implantada no declive do terreno, a Casa Lago se organiza em três níveis que se abrem para o verde e para o pôr do sol. Madeira, pedra e concreto conversam com o paisagismo tropical, e a escada de degraus flutuantes que sobe pelo jardim continua dentro de casa, apoiada na parede de pedra.',
   },
