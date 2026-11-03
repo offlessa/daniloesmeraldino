@@ -122,6 +122,46 @@ export const projects: Project[] = [
       'Uma casa térrea clara e serena, em que a pedra natural e o vidro de pé-direito alto marcam a entrada. O paisagismo tropical na frente do lote faz a transição entre a rua e a casa.',
   },
   {
+    title: 'Casa Azambuja',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'concluido',
+    image: '/images/web/portfolio-casa-azambuja.jpg',
+    description:
+      'Térrea e horizontal, aos pés do morro, a Casa Azambuja combina madeira, pedra clara e grandes panos de vidro. Ao entardecer, a luz embutida nos beirais e no jardim transforma a casa em uma lanterna na paisagem.',
+  },
+  {
+    title: 'Casa de Pedra',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'concluido',
+    image: '/images/web/portfolio-casa-de-pedra.jpg',
+    description:
+      'Uma casa de campo em meio às montanhas, com telhado escuro de duas águas, chaminé marcante e grandes vidros voltados para a paisagem. O lote cercado de verde completa o clima de refúgio.',
+  },
+  {
+    title: 'Casa Buena',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'concluido',
+    image: '/images/web/portfolio-casa-buena.jpg',
+    description:
+      'Um sobrado contemporâneo de volumes recortados, em que o painel em tom terracota marca a fachada entre o vidro e os volumes claros.',
+  },
+  {
+    title: 'Casa Sobrado',
+    category: 'Interiores',
+    type: 'interiores',
+    year: '',
+    status: 'concluido',
+    image: '/images/web/portfolio-casa-sobrado.jpg',
+    description:
+      'Interiores em tons claros e acabamentos delicados: suíte com cabeceira estofada e luz suave, banho e penteadeira com espelhos iluminados e detalhes dourados, e um quarto infantil em azul com marcenaria sob medida.',
+  },
+  {
     title: 'Casa Aconchego',
     category: 'Residência',
     type: 'residencial',
@@ -282,6 +322,86 @@ export const projects: Project[] = [
       'Uma releitura contemporânea do clássico: fachada branca com colunas, esquadrias pretas e portão em ferro trabalhado. As palmeiras na entrada reforçam a simetria do conjunto.',
   },
   {
+    title: 'Casa Pietra',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-pietra.jpg',
+    description:
+      'Uma moldura escura envolve o volume superior e define a fachada, com pedra, madeira e floreiras. Por dentro, marcenaria em madeira, luz indireta e tons neutros desenham cada ambiente — da cozinha e do escritório às suítes e closets.',
+  },
+  {
+    title: 'Casa Brisa',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-brisa.jpg',
+    description:
+      'Térrea e de linhas horizontais, a Casa Brisa combina volumes claros, madeira e paisagismo tropical. Nos fundos, a piscina com deck se abre para a área gourmet.',
+  },
+  {
+    title: 'Casa Flora',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-flora.jpg',
+    description:
+      'Um sobrado em tons terrosos e verde, com brises de madeira, floreiras e garagem no nível da rua. Nos fundos, a piscina e o lounge com fogo se cercam de um jardim exuberante.',
+  },
+  {
+    title: 'Casa Bravea',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-bravea.jpg',
+    description:
+      'A fachada em pedra clara, de recorte irregular, contrasta com o painel de madeira da entrada e com as palmeiras do jardim. Nos fundos, a piscina se integra à área social por grandes portas de vidro.',
+  },
+  {
+    title: 'Casa DG',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-dg.jpg',
+    description:
+      'Térrea, com um volume branco que abriga a garagem e uma entrada marcada por madeira e caixilhos escuros. Nos fundos, a piscina estreita acompanha o jardim e um pátio de convívio.',
+  },
+  {
+    title: 'Casa Lá',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-la.jpg',
+    description:
+      'Volumes brancos sobrepostos, beirais em madeira e uma torre revestida em pedra. Na entrada, o caminho pelo jardim leva até a porta de pé-direito duplo.',
+  },
+  {
+    title: 'Casa Vétria',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-casa-vetria.jpg',
+    description:
+      'Volumes em tons de areia e grafite, beirais finos e painéis escuros que filtram a luz. A garagem coberta e o jardim com palmeiras recebem quem chega.',
+  },
+  {
+    title: 'Chalé da Montanha',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-chale-da-montanha.jpg',
+    description:
+      'Um chalé na encosta, com telhado de duas águas, estrutura de madeira aparente, torre de pedra e varandas que se debruçam sobre a vista. A piscina completa o refúgio.',
+  },
+  {
     title: 'Casa Iron',
     category: 'Reforma Residencial',
     type: 'residencial',
@@ -299,7 +419,17 @@ export const projects: Project[] = [
     status: 'andamento',
     image: '/images/web/portfolio-bar-facil.jpg',
     description:
-      'Edifício comercial de esquina com fachada curva em ripado e vidro, que dá identidade e sombra às lojas. No alto, um terraço ajardinado; no térreo, a calçada ganha bancos, canteiros e espaço para quem passa.',
+      'Edifício comercial de esquina com fachada curva em ripado e vidro, praça ajardinada com espelho d\'água e terraço verde no alto. Por dentro, o escritório da Bar Fácil ganha estações de trabalho, salas de reunião e áreas de convivência com a identidade da marca.',
+  },
+  {
+    title: 'WR Caminhões',
+    category: 'Projeto Comercial',
+    type: 'comercial',
+    year: '',
+    status: 'projeto',
+    image: '/images/web/portfolio-wr-caminhoes.jpg',
+    description:
+      'Sede de uma concessionária de caminhões, com grandes galpões, pátio de exposição e as letras da marca em destaque na fachada. O projeto organiza oficinas, docas e estacionamento em um conjunto amplo e ajardinado.',
   },
 ]
 

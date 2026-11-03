@@ -16,6 +16,7 @@ export const testimonials: Testimonial[] = [
     name: 'Gisele Margotti',
     company: 'Casa Pietra',
     text: 'Só elogios... atendimento top e de muita qualidade. Parabéns pelo trabalho! Projetos lindos e diferenciados! Um escritório que dá vida à nossos sonhos!',
+    project: 'casa-pietra',
   },
   {
     name: 'Didiane Almeida',
