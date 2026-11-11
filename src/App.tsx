@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import Preloader from './components/Preloader'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -16,6 +16,7 @@ import QuizPage from './pages/QuizPage'
 import QuizCta from './components/QuizCta'
 import { INTRO_DELAY } from './constants/motion'
 import { route, IS_HOME } from './route'
+import { loadSiteData } from './data/store'
 
 function Home() {
   // Vindo de outra página com /#secao: rola até ela quando a abertura terminar
@@ -43,7 +44,22 @@ function Home() {
   )
 }
 
+// O painel só é baixado por quem abre /admin
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+
 function App() {
+  // Obras e fotos atualizadas pelo painel (o site abre com as do código e troca quando chegam)
+  useEffect(() => {
+    if (route.page !== 'admin') loadSiteData()
+  }, [])
+
+  if (route.page === 'admin')
+    return (
+      <Suspense fallback={null}>
+        <AdminPage />
+      </Suspense>
+    )
+
   return (
     <>
       {IS_HOME && <Preloader />}

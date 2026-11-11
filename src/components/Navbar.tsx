@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, X } from 'lucide-react'
 import { INTRO_DELAY } from '../constants/motion'
-import { IS_HOME, QUIZ_PATH } from '../route'
+import { ADMIN_PATH, IS_HOME, QUIZ_PATH } from '../route'
 import { social } from '../constants/social'
 import { projectsUrl, TYPE_FILTERS, type ProjectQuery } from '../data/projects'
 import QuoteModal from './QuoteModal'
@@ -197,6 +197,13 @@ export default function Navbar() {
                   )
                 })}
               </div>
+
+              <a
+                href={ADMIN_PATH}
+                className="mt-10 self-center text-[9px] tracking-[0.3em] uppercase text-sand/50 hover:text-sand-light transition-colors"
+              >
+                Área do administrador
+              </a>
             </div>
           </motion.nav>
         )}

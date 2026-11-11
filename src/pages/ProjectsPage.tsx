@@ -5,7 +5,6 @@ import BrickLoader from '../components/BrickLoader'
 import FadeIn from '../components/FadeIn'
 import Footer from '../components/Footer'
 import {
-  projects,
   INTERIORS_ID,
   STATUS_FILTERS,
   STATUS_LABEL,
@@ -21,16 +20,14 @@ import {
   type Status,
   type TypeFilter,
 } from '../data/projects'
-import { galleries } from '../data/galleries'
+import { galleryOf, useSiteData, type Photo, type SiteData } from '../data/store'
 import { DEFAULT_LOCATION } from '../data/locations'
 
 const ALL_PLACES = 'todas'
 
 const cityOf = (p: Project) => (p.location ?? DEFAULT_LOCATION).split(',')[0].trim()
 
-const interiorsOf = (p: Project) => (galleries[slugify(p.title)] ?? []).filter((f) => f.interior)
-
-const isMatch = (p: Project, q: ProjectQuery) => matches(p, q, interiorsOf(p).length > 0)
+const interiorsOf = (d: SiteData, p: Project) => galleryOf(d, p).filter((f) => f.interior)
 
 // Endereços antigos (?filtro=residencial, ?filtro=concluido…) continuam funcionando
 const legacyQuery = (filtro: string | null): ProjectQuery => ({
@@ -39,15 +36,16 @@ const legacyQuery = (filtro: string | null): ProjectQuery => ({
 })
 
 // Cidades com projetos, da que tem mais para a que tem menos
-const places = Object.entries(
-  projects.reduce<Record<string, number>>((acc, p) => {
-    const city = cityOf(p)
-    acc[city] = (acc[city] ?? 0) + 1
-    return acc
-  }, {})
-)
-  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-  .map(([city]) => ({ id: slugify(city), label: city }))
+const placesOf = (projects: Project[]) =>
+  Object.entries(
+    projects.reduce<Record<string, number>>((acc, p) => {
+      const city = cityOf(p)
+      acc[city] = (acc[city] ?? 0) + 1
+      return acc
+    }, {})
+  )
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([city]) => ({ id: slugify(city), label: city }))
 
 const filtersFromUrl = () => {
   const params = new URLSearchParams(window.location.search)
@@ -60,7 +58,7 @@ const filtersFromUrl = () => {
       tipo: isTypeFilter(tipo) ? tipo : legacy.tipo,
       situacao: isStatusFilter(situacao) ? situacao : legacy.situacao,
     },
-    place: places.some((p) => p.id === local) ? local! : ALL_PLACES,
+    place: local ?? ALL_PLACES,
   }
 }
 
@@ -83,9 +81,8 @@ const statusDot = (s: Status) =>
 
 const DISABLED = 'disabled:opacity-30 disabled:pointer-events-none'
 
-function ProjectCard({ project, interiors }: { project: Project; interiors: boolean }) {
-  // Em "Interiores", o card mostra um ambiente interno e leva direto para essa parte da página
-  const interior = interiors ? interiorsOf(project)[0] : undefined
+// Em "Interiores", o card mostra um ambiente interno e leva direto para essa parte da página
+function ProjectCard({ project, interior }: { project: Project; interior?: Photo }) {
   return (
     <a
       href={interior ? `${projectUrl(project)}#${INTERIORS_ID}` : projectUrl(project)}
@@ -132,7 +129,13 @@ function ProjectCard({ project, interiors }: { project: Project; interiors: bool
 }
 
 export default function ProjectsPage() {
-  const [{ query, place }, setFilters] = useState(filtersFromUrl)
+  const data = useSiteData()
+  const { projects } = data
+  const places = placesOf(projects)
+  const [{ query, place: placeParam }, setFilters] = useState(filtersFromUrl)
+  // Cidade que não existe (link antigo ou digitado): mostra todas
+  const place = places.some((p) => p.id === placeParam) ? placeParam : ALL_PLACES
+  const isMatch = (p: Project, q: ProjectQuery) => matches(p, q, interiorsOf(data, p).length > 0)
 
   // Mantém os filtros no endereço (dá para compartilhar o link) e acompanha o botão "voltar"
   useEffect(() => {
@@ -264,7 +267,11 @@ export default function ProjectsPage() {
           {visible.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3">
               {visible.map((p) => (
-                <ProjectCard key={p.title} project={p} interiors={query.tipo === 'interiores'} />
+                <ProjectCard
+                  key={p.title}
+                  project={p}
+                  interior={query.tipo === 'interiores' ? interiorsOf(data, p)[0] : undefined}
+                />
               ))}
             </div>
           ) : (

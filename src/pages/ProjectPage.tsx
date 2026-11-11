@@ -6,20 +6,10 @@ import BrickLoader from '../components/BrickLoader'
 import Lightbox from '../components/Lightbox'
 import QuoteModal from '../components/QuoteModal'
 import { EASE_OUT } from '../constants/motion'
-import { galleries } from '../data/galleries'
+import { useSiteData, type Photo } from '../data/store'
 import { DEFAULT_LOCATION, locate } from '../data/locations'
 import { testimonials } from '../data/testimonials'
-import {
-  projects,
-  INTERIORS_ID,
-  STATUS_LABEL,
-  projectUrl,
-  projectsUrl,
-  slugify,
-  type Project,
-} from '../data/projects'
-
-type Photo = { src: string; w: number; h: number }
+import { INTERIORS_ID, STATUS_LABEL, projectSlug, projectUrl, projectsUrl, type Project } from '../data/projects'
 
 /**
  * Agrupa a galeria no ritmo da referência: uma foto horizontal em largura total,
@@ -221,16 +211,26 @@ function GalleryRows({ rows, alt, onOpen }: { rows: Photo[][]; alt: string; onOp
 
 export default function ProjectPage({ slug }: { slug: string }) {
   const [photoIndex, setPhotoIndex] = useState<number | null>(null)
+  const { projects, galleries, loaded } = useSiteData()
+  const index = projects.findIndex((p) => projectSlug(p) === slug)
 
   // Veio de "Interiores" (…#interiores): desce direto para essa parte
   useEffect(() => {
-    if (window.location.hash !== `#${INTERIORS_ID}`) return
+    if (index < 0 || window.location.hash !== `#${INTERIORS_ID}`) return
     const t = setTimeout(() => document.getElementById(INTERIORS_ID)?.scrollIntoView({ behavior: 'smooth' }), 400)
     return () => clearTimeout(t)
-  }, [slug])
+  }, [slug, index])
 
-  const index = projects.findIndex((p) => slugify(p.title) === slug)
-  if (index < 0) return <NotFound />
+  if (index < 0) {
+    // Obra criada pelo painel ainda chegando do banco: espera antes de dizer que não existe
+    if (!loaded)
+      return (
+        <main className="min-h-screen flex items-center justify-center bg-white">
+          <BrickLoader className="w-20" />
+        </main>
+      )
+    return <NotFound />
+  }
 
   const project = projects[index]
   const next: Project = projects[(index + 1) % projects.length]

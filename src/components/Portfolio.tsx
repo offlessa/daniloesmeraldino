@@ -3,16 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SectionHeader from './SectionHeader'
 import FadeIn from './FadeIn'
 import { EASE_OUT } from '../constants/motion'
-import { projects, STATUS_LABEL, projectsUrl, projectUrl } from '../data/projects'
+import { STATUS_LABEL, projectSlug, projectsUrl, projectUrl } from '../data/projects'
+import { useSiteData } from '../data/store'
 
 const INTERVAL = 6000
 const SWIPE = 60
 
 // Só estas aparecem no carrossel; as demais ficam em "Todos os projetos"
-const FEATURED = ['Casa Lago', 'Casa JE']
-const featured = projects.filter((p) => FEATURED.includes(p.title))
+const FEATURED = ['casa-lago', 'casa-je']
 
 export default function Portfolio() {
+  const { projects } = useSiteData()
+  const featured = projects.filter((p) => FEATURED.includes(projectSlug(p)))
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
 

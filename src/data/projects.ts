@@ -9,6 +9,8 @@ export const STATUS_LABEL: Record<Status, string> = {
 }
 
 export interface Project {
+  /** Endereço fixo da página (vem do painel); sem ele, sai do título */
+  slug?: string
   title: string
   category: string
   type: ProjectType
@@ -497,10 +499,11 @@ export const slugify = (title: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 
+/** Identificação do projeto no endereço e nas galerias: 'casa-lago' */
+export const projectSlug = (p: Project) => p.slug ?? slugify(p.title)
+
 /** Endereço da página de um projeto */
-export const projectUrl = (p: Project) => `/projetos/${slugify(p.title)}`
+export const projectUrl = (p: Project) => `/projetos/${projectSlug(p)}`
 
 /** Âncora da seção de interiores na página do projeto */
 export const INTERIORS_ID = 'interiores'
-
-export const findProject = (slug: string) => projects.find((p) => slugify(p.title) === slug)
