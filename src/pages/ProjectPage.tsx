@@ -7,9 +7,11 @@ import Lightbox from '../components/Lightbox'
 import QuoteModal from '../components/QuoteModal'
 import { EASE_OUT } from '../constants/motion'
 import { useSiteData, type Photo } from '../data/store'
+import { EditableText, useEdit, type ProjectPatch } from '../admin/edit'
+import { CoverButton, EditGallery, ProjectAdminBar, StatusValue } from '../admin/ProjectEditing'
 import { DEFAULT_LOCATION, locate } from '../data/locations'
 import { testimonials } from '../data/testimonials'
-import { INTERIORS_ID, STATUS_LABEL, projectSlug, projectUrl, projectsUrl, type Project } from '../data/projects'
+import { INTERIORS_ID, projectSlug, projectUrl, projectsUrl, type Project } from '../data/projects'
 
 /**
  * Agrupa a galeria no ritmo da referência: uma foto horizontal em largura total,
@@ -35,12 +37,29 @@ function layoutGallery(photos: Photo[]) {
   return rows
 }
 
-function Fact({ label, value }: { label: string; value?: string }) {
-  if (!value) return null
+function Fact({
+  label,
+  value,
+  onSave,
+  placeholder,
+  children,
+}: {
+  label: string
+  value?: string
+  /** No modo edição, o valor vira campo editável e é gravado com esta função */
+  onSave?: (value: string) => Promise<void>
+  placeholder?: string
+  children?: React.ReactNode
+}) {
+  const { editing } = useEdit()
+  const editable = editing && onSave
+  if (!value && !editable && !children) return null
   return (
     <div className="grid grid-cols-2 gap-6 py-3 border-b border-olive/15">
       <dt className="text-[11px] tracking-[0.25em] uppercase text-olive-light">{label}</dt>
-      <dd className="text-primary-700">{value}</dd>
+      <dd className="text-primary-700">
+        {children ?? (editable ? <EditableText value={value ?? ''} onSave={onSave} placeholder={placeholder} /> : value)}
+      </dd>
     </div>
   )
 }
@@ -212,6 +231,7 @@ function GalleryRows({ rows, alt, onOpen }: { rows: Photo[][]; alt: string; onOp
 export default function ProjectPage({ slug }: { slug: string }) {
   const [photoIndex, setPhotoIndex] = useState<number | null>(null)
   const { projects, galleries, loaded } = useSiteData()
+  const { editing, api } = useEdit()
   const index = projects.findIndex((p) => projectSlug(p) === slug)
 
   // Veio de "Interiores" (…#interiores): desce direto para essa parte
@@ -235,6 +255,8 @@ export default function ProjectPage({ slug }: { slug: string }) {
   const project = projects[index]
   const next: Project = projects[(index + 1) % projects.length]
   const photos = galleries[slug] ?? []
+  // Modo edição (administrador): grava cada campo assim que é alterado
+  const save = (patch: ProjectPatch) => api?.saveProject(project, patch) ?? Promise.resolve()
   const outside = layoutGallery(photos.filter((p) => !p.interior))
   const inside = layoutGallery(photos.filter((p) => p.interior))
   // Ordem em que aparecem na página (a tela cheia segue a mesma)
@@ -255,6 +277,7 @@ export default function ProjectPage({ slug }: { slug: string }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, ease: EASE_OUT }}
         />
+        <CoverButton project={project} />
       </section>
 
       {/* Título + ficha técnica */}
@@ -267,7 +290,7 @@ export default function ProjectPage({ slug }: { slug: string }) {
             ← Todos os projetos
           </a>
           <h1 className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl uppercase tracking-[0.06em] text-olive">
-            {project.title}
+            <EditableText value={project.title} onSave={(title) => save({ title })} />
           </h1>
         </FadeIn>
 
@@ -275,13 +298,26 @@ export default function ProjectPage({ slug }: { slug: string }) {
           <FadeIn className="lg:col-span-6" delay={0.1}>
             <h2 className="text-[11px] tracking-[0.35em] uppercase text-olive">Ficha técnica</h2>
             <dl className="mt-4 border-t border-olive/15">
-              <Fact label="Tipo" value={project.category} />
-              <Fact label="Situação" value={STATUS_LABEL[project.status]} />
-              <Fact label="Localização" value={location} />
-              <Fact label="Área construída" value={project.area} />
-              <Fact label={project.status === 'concluido' ? 'Conclusão' : 'Ano'} value={year} />
+              <Fact label="Tipo" value={project.category} onSave={(category) => save({ category })} placeholder="Residência" />
+              <Fact label="Situação">
+                <StatusValue project={project} />
+              </Fact>
+              <Fact
+                label="Localização"
+                value={editing ? project.location : location}
+                onSave={(v) => save({ location: v || null })}
+                placeholder={DEFAULT_LOCATION}
+              />
+              <Fact label="Área construída" value={project.area} onSave={(v) => save({ area: v || null })} placeholder="275,78 m²" />
+              <Fact
+                label={project.status === 'concluido' ? 'Conclusão' : 'Ano'}
+                value={year}
+                onSave={(v) => save({ year: v })}
+                placeholder="2025"
+              />
               <Fact label="Projeto" value="Estúdio Danilo Esmeraldino" />
             </dl>
+            <ProjectAdminBar project={project} />
             {inside.length > 0 && outside.length > 0 && (
               <a
                 href={`#${INTERIORS_ID}`}
@@ -293,17 +329,31 @@ export default function ProjectPage({ slug }: { slug: string }) {
           </FadeIn>
         </div>
 
-        {project.description && (
-          <FadeIn className="mt-20 lg:mt-28 max-w-3xl mx-auto space-y-6 font-serif text-xl sm:text-2xl leading-[1.7] text-primary-700">
-            {project.description.split(/\n\s*\n/).map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
-            ))}
-          </FadeIn>
+        {editing ? (
+          <div className="mt-20 lg:mt-28 max-w-3xl mx-auto font-serif text-xl sm:text-2xl leading-[1.7] text-primary-700">
+            <EditableText
+              value={project.description ?? ''}
+              onSave={(v) => save({ description: v || null })}
+              placeholder="Texto de apresentação da obra (deixe uma linha em branco entre os parágrafos)"
+              multiline
+              className="w-full"
+            />
+          </div>
+        ) : (
+          project.description && (
+            <FadeIn className="mt-20 lg:mt-28 max-w-3xl mx-auto space-y-6 font-serif text-xl sm:text-2xl leading-[1.7] text-primary-700">
+              {project.description.split(/\n\s*\n/).map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
+            </FadeIn>
+          )
         )}
       </section>
 
-      {/* Galeria: fotos da obra e, depois, os interiores */}
-      {ordered.length > 0 && (
+      {/* Galeria: no modo edição, todas as fotos com os controles; senão, como o visitante vê */}
+      {editing ? (
+        <EditGallery project={project} photos={photos} />
+      ) : ordered.length > 0 && (
         <section className="px-6 sm:px-10 lg:px-20 pb-24 lg:pb-32">
           {outside.length > 0 && (
             <GalleryRows rows={outside} alt={project.title} onOpen={(p) => setPhotoIndex(ordered.indexOf(p))} />

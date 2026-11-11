@@ -1,7 +1,7 @@
 import FadeIn from './FadeIn'
 
 interface SectionHeaderProps {
-  label: string
+  label: React.ReactNode
   title: React.ReactNode
   light?: boolean
   className?: string

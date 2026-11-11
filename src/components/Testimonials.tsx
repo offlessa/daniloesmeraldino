@@ -3,16 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SectionHeader from './SectionHeader'
 import ParallaxRect from './ParallaxRect'
 import { testimonials } from '../data/testimonials'
+import { Txt } from '../admin/SiteContent'
+import { useEdit } from '../admin/edit'
 
 const INTERVAL = 8000
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0)
+  const { editing } = useEdit()
 
+  // Troca sozinho, menos no modo edição (o depoimento sumiria no meio da edição)
   useEffect(() => {
+    if (editing) return
     const t = setTimeout(() => setCurrent((c) => (c + 1) % testimonials.length), INTERVAL)
     return () => clearTimeout(t)
-  }, [current])
+  }, [current, editing])
 
   const go = (dir: number) =>
     setCurrent((c) => (c + dir + testimonials.length) % testimonials.length)
@@ -33,7 +38,10 @@ export default function Testimonials() {
 
       <div className="relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-8">
         <div className="lg:col-span-4">
-          <SectionHeader label="Depoimentos" title={<>Quem vive<br /><em className="text-olive-light">os projetos</em></>} />
+          <SectionHeader
+            label={<Txt k="testimonials.label" d="Depoimentos" />}
+            title={<Txt k="testimonials.title" d={'Quem vive\n*os projetos*'} em="text-olive-light" />}
+          />
 
           <div className="mt-12 flex items-center gap-6">
             <button
@@ -72,12 +80,16 @@ export default function Testimonials() {
               transition={{ duration: 0.5 }}
             >
               <blockquote className="font-serif italic text-2xl sm:text-3xl leading-[1.55] text-primary-700">
-                {t.text}
+                <Txt k={`testimonial${current}.text`} d={t.text} multiline />
               </blockquote>
               <figcaption className="mt-10 flex items-center gap-4 text-[11px] tracking-[0.3em] uppercase text-olive">
                 <span className="w-10 h-px bg-olive/50" />
-                {t.name}
-                {t.company && <span className="text-olive-light">· {t.company}</span>}
+                <Txt k={`testimonial${current}.name`} d={t.name} />
+                {t.company && (
+                  <span className="text-olive-light">
+                    · <Txt k={`testimonial${current}.company`} d={t.company} />
+                  </span>
+                )}
               </figcaption>
             </motion.figure>
           </AnimatePresence>

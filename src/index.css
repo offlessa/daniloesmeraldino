@@ -74,3 +74,29 @@ a, button {
   background: #dcd4cd;
   color: #454334;
 }
+
+/* Modo edição do administrador: textos que dá para clicar e escrever */
+/* Contorno na cor do próprio texto: aparece tanto no fundo claro quanto no oliva do rodapé */
+.editable {
+  outline: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
+  outline-offset: 4px;
+  cursor: text;
+  min-width: 2ch;
+  display: inline-block;
+  transition: outline-color 0.2s ease, background-color 0.2s ease;
+}
+
+.editable:hover {
+  outline-color: currentColor;
+  background-color: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.editable:focus {
+  outline: 2px solid currentColor;
+  background-color: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.editable:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.4;
+}

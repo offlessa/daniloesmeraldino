@@ -17,6 +17,7 @@ import QuizCta from './components/QuizCta'
 import { INTRO_DELAY } from './constants/motion'
 import { route, IS_HOME } from './route'
 import { loadSiteData } from './data/store'
+import { HAS_ADMIN_SESSION } from './admin/edit'
 
 function Home() {
   // Vindo de outra página com /#secao: rola até ela quando a abertura terminar
@@ -44,8 +45,9 @@ function Home() {
   )
 }
 
-// O painel só é baixado por quem abre /admin
+// O painel e a edição no site só são baixados por quem abre /admin ou tem login salvo
 const AdminPage = lazy(() => import('./pages/AdminPage'))
+const EditProvider = lazy(() => import('./admin/EditProvider'))
 
 function App() {
   // Obras e fotos atualizadas pelo painel (o site abre com as do código e troca quando chegam)
@@ -60,7 +62,7 @@ function App() {
       </Suspense>
     )
 
-  return (
+  const site = (
     <>
       {IS_HOME && <Preloader />}
       <Navbar />
@@ -76,6 +78,14 @@ function App() {
       <WhatsAppButton />
       <DevNotice />
     </>
+  )
+
+  // Visitantes: o site puro. Administrador logado: o mesmo site, com o modo edição por cima
+  if (!HAS_ADMIN_SESSION) return site
+  return (
+    <Suspense fallback={site}>
+      <EditProvider>{site}</EditProvider>
+    </Suspense>
   )
 }
 

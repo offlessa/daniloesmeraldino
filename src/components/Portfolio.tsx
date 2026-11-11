@@ -5,6 +5,7 @@ import FadeIn from './FadeIn'
 import { EASE_OUT } from '../constants/motion'
 import { STATUS_LABEL, projectSlug, projectsUrl, projectUrl } from '../data/projects'
 import { useSiteData } from '../data/store'
+import { Txt } from '../admin/SiteContent'
 
 const INTERVAL = 6000
 const SWIPE = 60
@@ -33,8 +34,8 @@ export default function Portfolio() {
     <section id="portfolio" className="relative py-32 lg:py-40 px-6 sm:px-10 lg:px-20 border-t border-sand">
       <SectionHeader
         className="mb-16 lg:mb-20"
-        label="Portfólio"
-        title={<>Projetos em <em className="text-olive-light">destaque</em></>}
+        label={<Txt k="portfolio.label" d="Portfólio" />}
+        title={<Txt k="portfolio.title" d="Projetos em *destaque*" em="text-olive-light" />}
       />
 
       <FadeIn>

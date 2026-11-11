@@ -3,6 +3,8 @@ import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion
 import SectionHeader from './SectionHeader'
 import FadeIn from './FadeIn'
 import BrickWall from './BrickWall'
+import { Txt, useSiteList } from '../admin/SiteContent'
+import { useEdit } from '../admin/edit'
 
 const steps = [
   {
@@ -56,6 +58,27 @@ function StepLine({ progress, index }: { progress: MotionValue<number>; index: n
   )
 }
 
+/** Itens de um grupo de entregas: um por linha (no modo edição, vira um campo com as linhas) */
+function DeliverableItems({ k, items }: { k: string; items: string[] }) {
+  const { editing } = useEdit()
+  const list = useSiteList(k, items)
+  if (editing)
+    return (
+      <div className="border-b border-olive/25 py-4 text-[11px] tracking-[0.3em] uppercase text-olive leading-[2.6]">
+        <Txt k={k} d={items.join('\n')} multiline />
+      </div>
+    )
+  return (
+    <>
+      {list.map((item) => (
+        <li key={item} className="border-b border-olive/25 py-4 text-[11px] tracking-[0.3em] uppercase text-olive">
+          {item}
+        </li>
+      ))}
+    </>
+  )
+}
+
 export default function Process() {
   const stepsRef = useRef<HTMLDivElement>(null)
   // 0 quando as etapas entram na tela, 1 quando a parede está inteira à vista
@@ -67,8 +90,8 @@ export default function Process() {
   return (
     <section id="process" className="relative py-32 lg:py-40 px-6 sm:px-10 lg:px-20 bg-sand-light">
       <SectionHeader
-        label="Processo"
-        title={<>Do projeto <em className="text-olive-light">à obra</em></>}
+        label={<Txt k="process.label" d="Processo" />}
+        title={<Txt k="process.title" d="Do projeto *à obra*" em="text-olive-light" />}
         className="mb-20 lg:mb-24"
       />
 
@@ -79,8 +102,12 @@ export default function Process() {
             <FadeIn key={step.title} className="relative border-t border-olive/25 pt-8" delay={i * 0.1}>
               <StepLine progress={progress} index={i} />
               <p className="font-serif italic text-olive-light text-lg">0{i + 1}</p>
-              <h3 className="mt-2 font-serif text-3xl text-olive">{step.title}</h3>
-              <p className="mt-4 text-primary-600 leading-relaxed">{step.description}</p>
+              <h3 className="mt-2 font-serif text-3xl text-olive">
+                <Txt k={`process.step${i}.title`} d={step.title} />
+              </h3>
+              <p className="mt-4 text-primary-600 leading-relaxed">
+                <Txt k={`process.step${i}.text`} d={step.description} />
+              </p>
             </FadeIn>
           ))}
         </div>
@@ -93,27 +120,24 @@ export default function Process() {
       <div className="mt-28 lg:mt-36 grid lg:grid-cols-12 gap-12 lg:gap-8">
         <FadeIn className="lg:col-span-4">
           <h3 className="font-serif text-3xl sm:text-4xl leading-tight text-olive">
-            Todos os projetos <em className="text-olive-light">da sua obra</em>
+            <Txt k="process.all.title" d="Todos os projetos *da sua obra*" em="text-olive-light" />
           </h3>
           <p className="mt-6 max-w-sm text-primary-600 leading-relaxed">
-            Um só escritório cuida de cada disciplina, já compatibilizadas entre si — menos
-            fornecedores para coordenar e nenhuma surpresa no canteiro.
+            <Txt
+              k="process.all.text"
+              d="Um só escritório cuida de cada disciplina, já compatibilizadas entre si — menos fornecedores para coordenar e nenhuma surpresa no canteiro."
+            />
           </p>
         </FadeIn>
 
         <div className="lg:col-span-7 lg:col-start-6 grid sm:grid-cols-2 gap-12 sm:gap-10">
           {deliverables.map((d, gi) => (
             <FadeIn key={d.group} delay={0.1 + gi * 0.1}>
-              <p className="text-[10px] tracking-[0.35em] uppercase text-olive-light">{d.group}</p>
+              <p className="text-[10px] tracking-[0.35em] uppercase text-olive-light">
+                <Txt k={`process.group${gi}.title`} d={d.group} />
+              </p>
               <ul className="mt-4 border-t border-olive/25">
-                {d.items.map((item) => (
-                  <li
-                    key={item}
-                    className="border-b border-olive/25 py-4 text-[11px] tracking-[0.3em] uppercase text-olive"
-                  >
-                    {item}
-                  </li>
-                ))}
+                <DeliverableItems k={`process.group${gi}.items`} items={d.items} />
               </ul>
             </FadeIn>
           ))}

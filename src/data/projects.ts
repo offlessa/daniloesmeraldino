@@ -9,8 +9,12 @@ export const STATUS_LABEL: Record<Status, string> = {
 }
 
 export interface Project {
+  /** Identificação no banco (só existe quando os dados vieram do painel) */
+  id?: string
   /** Endereço fixo da página (vem do painel); sem ele, sai do título */
   slug?: string
+  /** false = oculta (só o administrador vê) */
+  published?: boolean
   title: string
   category: string
   type: ProjectType

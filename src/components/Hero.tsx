@@ -1,10 +1,16 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { INTRO_DELAY, EASE_OUT } from '../constants/motion'
+import { ImageSwap, Txt, useSiteImage } from '../admin/SiteContent'
+
+const HERO_IMAGE = '/images/web/hero-background.jpg'
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [playing, setPlaying] = useState(false)
+  const image = useSiteImage('hero.image', HERO_IMAGE)
+  // O tour em vídeo é da Casa Lago: se a foto foi trocada, ele não aparece
+  const showTour = image === HERO_IMAGE
 
   const playTour = () => {
     // A foto continua visível até o vídeo realmente começar
@@ -29,12 +35,14 @@ export default function Hero() {
         transition={{ delay: INTRO_DELAY, duration: 1, ease: EASE_OUT }}
       >
         <h1 className="font-serif text-[2.75rem] sm:text-6xl xl:text-7xl leading-[1.05] text-olive">
-          Arquitetura que <em className="text-olive-light">traduz quem</em> você é.
+          <Txt k="hero.title" d="Arquitetura que *traduz quem* você é." em="text-olive-light" />
         </h1>
 
         <p className="mt-10 max-w-md text-base sm:text-lg leading-relaxed text-primary-700">
-          Projetos residenciais e comerciais sob medida — arquitetura, projetos complementares e
-          interiores sob um mesmo acompanhamento, do primeiro traço à obra entregue.
+          <Txt
+            k="hero.text"
+            d="Projetos residenciais e comerciais sob medida — arquitetura, projetos complementares e interiores sob um mesmo acompanhamento, do primeiro traço à obra entregue."
+          />
         </p>
 
         <div className="mt-12 flex flex-wrap items-center gap-8">
@@ -42,10 +50,10 @@ export default function Hero() {
             href="#portfolio"
             className="inline-flex items-center bg-olive text-sand-light px-8 py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-olive-dark transition-colors"
           >
-            Ver projetos
+            <Txt k="hero.button" d="Ver projetos" />
           </a>
           <a href="#contact" className="link-underline text-[11px] tracking-[0.3em] uppercase">
-            Fale conosco
+            <Txt k="hero.link" d="Fale conosco" />
           </a>
         </div>
       </motion.div>
@@ -64,29 +72,32 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: INTRO_DELAY + 0.15, duration: 1.2 }}
-          onMouseEnter={playTour}
-          onMouseLeave={pauseTour}
+          onMouseEnter={showTour ? playTour : undefined}
+          onMouseLeave={showTour ? pauseTour : undefined}
         >
           <img
-            src="/images/web/hero-background.jpg"
+            src={image}
             alt="Casa Lago — Estúdio Danilo Esmeraldino"
             className="absolute inset-0 w-full h-full object-cover"
           />
           {/* Tour da Casa Lago: só carrega e toca com o mouse sobre a foto */}
-          <video
-            ref={videoRef}
-            src="/images/web/casa-lago-tour.mp4"
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              playing ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+          {showTour && (
+            <video
+              ref={videoRef}
+              src="/images/web/casa-lago-tour.mp4"
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-hidden
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                playing ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          )}
+          <ImageSwap k="hero.image" />
           <p className="absolute bottom-0 right-0 bg-white px-5 py-3 text-[10px] tracking-[0.3em] uppercase text-olive">
-            Casa Lago · 2024
+            <Txt k="hero.caption" d="Casa Lago · 2024" />
           </p>
         </motion.div>
       </div>

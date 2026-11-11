@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import BrickLoader from './BrickLoader'
 import { EASE_OUT, INTRO_DELAY } from '../constants/motion'
 import { IS_HOME } from '../route'
+import { HAS_ADMIN_SESSION } from '../admin/edit'
 
 const STORAGE_KEY = 'aviso-site-em-desenvolvimento'
 
@@ -20,7 +21,8 @@ export default function DevNotice() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (wasDismissed()) return
+    // O administrador já sabe: o aviso só atrapalharia a barra de edição
+    if (HAS_ADMIN_SESSION || wasDismissed()) return
     // Na página inicial, espera a abertura com a logo terminar
     const t = setTimeout(() => setOpen(true), (IS_HOME ? INTRO_DELAY + 0.8 : 1) * 1000)
     return () => clearTimeout(t)

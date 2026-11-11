@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Building2, ChevronDown, Home, LayoutGrid, MapPin, Sofa, X } from 'lucide-react'
+import { Building2, ChevronDown, Home, LayoutGrid, MapPin, Plus, Sofa, X } from 'lucide-react'
 import BrickLoader from '../components/BrickLoader'
 import FadeIn from '../components/FadeIn'
 import Footer from '../components/Footer'
@@ -21,6 +21,7 @@ import {
   type TypeFilter,
 } from '../data/projects'
 import { galleryOf, useSiteData, type Photo, type SiteData } from '../data/store'
+import { useEdit } from '../admin/edit'
 import { DEFAULT_LOCATION } from '../data/locations'
 
 const ALL_PLACES = 'todas'
@@ -100,6 +101,11 @@ function ProjectCard({ project, interior }: { project: Project; interior?: Photo
       <div className="px-6 sm:px-8 pt-8 pb-14">
         <h2 className="font-serif text-2xl sm:text-3xl uppercase tracking-[0.08em] text-olive">
           {project.title}
+          {project.published === false && (
+            <span className="ml-3 align-middle bg-red-700 px-2 py-1 font-sans text-[9px] tracking-[0.2em] text-white">
+              Oculta
+            </span>
+          )}
         </h2>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.25em] uppercase text-primary-500">
           <span
@@ -130,7 +136,16 @@ function ProjectCard({ project, interior }: { project: Project; interior?: Photo
 
 export default function ProjectsPage() {
   const data = useSiteData()
-  const { projects } = data
+  const { editing, api } = useEdit()
+  // Obras ocultas só aparecem para o administrador no modo edição
+  const projects = editing ? data.projects : data.projects.filter((p) => p.published !== false)
+
+  const createProject = async () => {
+    const title = window.prompt('Nome da nova obra (ex.: Casa Jacarandá):')?.trim()
+    if (!title || !api) return
+    const slug = await api.createProject(title)
+    if (slug) window.location.href = `/projetos/${slug}`
+  }
   const places = placesOf(projects)
   const [{ query, place: placeParam }, setFilters] = useState(filtersFromUrl)
   // Cidade que não existe (link antigo ou digitado): mostra todas
@@ -167,6 +182,14 @@ export default function ProjectsPage() {
             região — das obras entregues aos projetos que estão saindo do papel. Escolha os filtros e
             descubra cada um.
           </p>
+          {editing && (
+            <button
+              onClick={createProject}
+              className="mt-10 inline-flex items-center gap-2 bg-olive px-6 py-3 text-[11px] tracking-[0.25em] uppercase text-sand-light hover:bg-olive-dark transition-colors"
+            >
+              <Plus className="w-4 h-4" strokeWidth={1.5} /> Nova obra
+            </button>
+          )}
         </FadeIn>
 
       </section>

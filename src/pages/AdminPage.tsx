@@ -16,7 +16,8 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react'
-import { PHOTO_BUCKET, supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
+import { supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
+import { removeStored, uploadPhoto } from '../admin/photos'
 import { STATUS_LABEL, slugify } from '../data/projects'
 
 // Visual do painel: o mesmo do site, mais enxuto
@@ -29,50 +30,6 @@ const SECONDARY =
   'inline-flex items-center justify-center gap-2 border border-olive/30 px-5 py-3 text-[11px] tracking-[0.25em] uppercase text-olive hover:border-olive transition-colors disabled:opacity-40 disabled:pointer-events-none'
 const ICON_BTN =
   'w-8 h-8 flex items-center justify-center bg-white/90 text-olive hover:bg-olive hover:text-sand-light transition-colors disabled:opacity-30 disabled:pointer-events-none'
-
-const PUBLIC_PREFIX = `/storage/v1/object/public/${PHOTO_BUCKET}/`
-
-/** Reduz a foto no próprio navegador antes de enviar (máx. 2000 px, JPEG) */
-async function shrink(file: File, max = 2000): Promise<{ blob: Blob; w: number; h: number }> {
-  const url = URL.createObjectURL(file)
-  try {
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const i = new Image()
-      i.onload = () => resolve(i)
-      i.onerror = reject
-      i.src = url
-    })
-    const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight))
-    const w = Math.round(img.naturalWidth * scale)
-    const h = Math.round(img.naturalHeight * scale)
-    const canvas = document.createElement('canvas')
-    canvas.width = w
-    canvas.height = h
-    canvas.getContext('2d')!.drawImage(img, 0, 0, w, h)
-    const blob = await new Promise<Blob>((resolve, reject) =>
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('falha ao converter'))), 'image/jpeg', 0.82)
-    )
-    return { blob, w, h }
-  } finally {
-    URL.revokeObjectURL(url)
-  }
-}
-
-/** Envia uma foto para a pasta da obra e devolve o endereço público */
-async function uploadPhoto(slug: string, file: File) {
-  const { blob, w, h } = await shrink(file)
-  const path = `${slug}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`
-  const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: 'image/jpeg' })
-  if (error) throw error
-  const { data } = supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path)
-  return { url: data.publicUrl, w, h }
-}
-
-/** Apaga do armazenamento uma foto enviada pelo painel (as que vieram com o site ficam) */
-async function removeStored(url: string) {
-  const i = url.indexOf(PUBLIC_PREFIX)
-  if (i >= 0) await supabase.storage.from(PHOTO_BUCKET).remove([url.slice(i + PUBLIC_PREFIX.length)])
-}
 
 function Notice({ text, error }: { text: string; error?: boolean }) {
   return (
