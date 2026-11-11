@@ -10,7 +10,6 @@ import { useSiteData, type Photo } from '../data/store'
 import { EditableText, useEdit, type ProjectPatch } from '../admin/edit'
 import { CoverButton, EditGallery, ProjectAdminBar, StatusValue } from '../admin/ProjectEditing'
 import { DEFAULT_LOCATION, locate } from '../data/locations'
-import { testimonials } from '../data/testimonials'
 import { INTERIORS_ID, projectSlug, projectUrl, projectsUrl, type Project } from '../data/projects'
 
 /**
@@ -160,6 +159,7 @@ function ProjectCta({ project }: { project: Project }) {
 
 /** Depoimento do dono da casa, quando houver um ligado a ela. */
 function ClientWords({ slug }: { slug: string }) {
+  const { testimonials } = useSiteData()
   const t = testimonials.find((t) => t.project === slug)
   if (!t) return null
   return (

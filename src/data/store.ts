@@ -1,7 +1,14 @@
 import { useSyncExternalStore } from 'react'
 import { projects as staticProjects, projectSlug, type Project } from './projects'
 import { galleries as staticGalleries } from './galleries'
-import { SUPABASE_ANON_KEY, SUPABASE_URL, type PhotoRow, type ProjectRow } from '../lib/supabaseConfig'
+import { testimonials as staticTestimonials, type Testimonial } from './testimonials'
+import {
+  SUPABASE_ANON_KEY,
+  SUPABASE_URL,
+  type PhotoRow,
+  type ProjectRow,
+  type TestimonialRow,
+} from '../lib/supabaseConfig'
 
 /** Foto da galeria; `id` só existe quando veio do banco (é o que permite editar) */
 export type Photo = { id?: string; src: string; w: number; h: number; interior?: boolean }
@@ -11,12 +18,20 @@ export interface SiteData {
   galleries: Record<string, Photo[]>
   /** Textos e fotos das páginas fixas alterados pelo administrador (chave → valor) */
   texts: Record<string, string>
+  /** Depoimentos aprovados, na ordem do site */
+  testimonials: Testimonial[]
   /** true depois de tentar buscar no banco (com ou sem sucesso) */
   loaded: boolean
 }
 
 // Começa com os dados que já vêm no site (abre na hora e serve de reserva se o banco falhar)
-let data: SiteData = { projects: staticProjects, galleries: staticGalleries, texts: {}, loaded: false }
+let data: SiteData = {
+  projects: staticProjects,
+  galleries: staticGalleries,
+  texts: {},
+  testimonials: staticTestimonials,
+  loaded: false,
+}
 const listeners = new Set<() => void>()
 
 const set = (next: SiteData) => {
@@ -63,6 +78,17 @@ export function applyRows(rows: (ProjectRow & { project_photos: PhotoRow[] })[])
   set({ ...data, projects, galleries, loaded: true })
 }
 
+export const toTestimonial = (r: TestimonialRow): Testimonial => ({
+  id: r.id,
+  name: r.name,
+  company: r.company,
+  text: r.text,
+  project: r.project ?? undefined,
+})
+
+/** Troca na tela a lista de depoimentos aprovados */
+export const setTestimonials = (rows: TestimonialRow[]) => set({ ...data, testimonials: rows.map(toTestimonial) })
+
 /** Grava na tela um texto/foto das páginas fixas (null = volta ao original) */
 export const setSiteText = (key: string, value: string | null) => {
   const texts = { ...data.texts }
@@ -86,12 +112,15 @@ const rest = async (path: string) => {
  */
 export function loadSiteData() {
   loading ??= (async () => {
-    const [rows, texts] = await Promise.all([
+    const [rows, texts, testimonials] = await Promise.all([
       rest('projects?select=*,project_photos(*)&published=eq.true&order=sort_order').catch(() => null),
       rest('site_content?select=key,value').catch(() => null),
+      rest('testimonials?select=*&status=eq.approved&order=sort_order,created_at').catch(() => null),
     ])
     if (Array.isArray(texts))
       data = { ...data, texts: Object.fromEntries(texts.map((t: { key: string; value: string }) => [t.key, t.value])) }
+    // Lista vazia no banco também vale (o administrador pode ter removido todos)
+    if (Array.isArray(testimonials)) data = { ...data, testimonials: testimonials.map(toTestimonial) }
     if (Array.isArray(rows) && rows.length) applyRows(rows)
     else set({ ...data, loaded: true })
   })().catch(() => set({ ...data, loaded: true }))
@@ -99,3 +128,22 @@ export function loadSiteData() {
 }
 
 export const galleryOf = (d: SiteData, p: Project) => d.galleries[projectSlug(p)] ?? []
+
+/**
+ * Envia um depoimento de visitante. Ele entra como pendente: só aparece no site depois que o
+ * administrador aprovar. Consulta direta, sem a biblioteca do Supabase.
+ */
+export async function sendTestimonial(t: { name: string; company: string; text: string }) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonials`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      // O visitante não pode ler pendentes, então não pede a linha de volta
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(t),
+  })
+  if (!res.ok) throw new Error(`envio recusado (${res.status})`)
+}

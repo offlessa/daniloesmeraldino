@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { Project } from '../data/projects'
 import type { Photo } from '../data/store'
-import type { ProjectRow } from '../lib/supabaseConfig'
+import type { ProjectRow, TestimonialRow } from '../lib/supabaseConfig'
+import type { Testimonial } from '../data/testimonials'
 
 // Edição direto no site. Este arquivo vai para todos os visitantes, então é só o "esqueleto":
 // o código que grava no banco (src/admin/EditProvider.tsx) só é baixado por quem fez login.
@@ -34,15 +35,22 @@ export interface EditApi {
   saveText: (key: string, value: string) => Promise<void>
   /** Troca uma foto das páginas fixas */
   uploadSiteImage: (key: string, file: File) => Promise<void>
+  /** Depoimentos de uma situação (ex.: os pendentes, para aprovar) */
+  listTestimonials: (status: TestimonialRow['status']) => Promise<TestimonialRow[]>
+  /** Aprovar, recusar ou remover do site */
+  setTestimonialStatus: (id: string, status: TestimonialRow['status']) => Promise<void>
+  updateTestimonial: (t: Testimonial, patch: Partial<Pick<TestimonialRow, 'name' | 'company' | 'text'>>) => Promise<void>
 }
 
 interface EditState {
   /** Modo edição ligado (administrador logado e com a chave ligada) */
   editing: boolean
   api: EditApi | null
+  /** Depoimentos aguardando aprovação */
+  pending: number
 }
 
-export const EditContext = createContext<EditState>({ editing: false, api: null })
+export const EditContext = createContext<EditState>({ editing: false, api: null, pending: 0 })
 
 export const useEdit = () => useContext(EditContext)
 

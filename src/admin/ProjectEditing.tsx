@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Eye, EyeOff, ImagePlus, Sofa, Star, Trash2, 
 import { STATUS_LABEL, projectsUrl, type Project, type Status } from '../data/projects'
 import type { Photo } from '../data/store'
 import { useEdit } from './edit'
+import { FeaturedToggle } from './featured'
 
 // Controles que só aparecem no modo edição, na página de uma obra
 
@@ -81,6 +82,7 @@ export function ProjectAdminBar({ project }: { project: Project }) {
       <span className="text-sm text-primary-600">
         {hidden ? 'Oculta — só quem está logado vê esta obra.' : 'Publicada — aparece para todos.'}
       </span>
+      <FeaturedToggle project={project} />
       <button
         onClick={remove}
         className="ml-auto inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-red-700 hover:underline"

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { LayoutGrid, LogOut, Pencil } from 'lucide-react'
+import { LayoutGrid, LogOut, MessageSquare, Pencil } from 'lucide-react'
 import { supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
-import { applyRows, loadSiteData, setSiteText, toPhoto, toProject, updateSiteData } from '../data/store'
+import type { TestimonialRow } from '../lib/supabaseConfig'
+import { applyRows, loadSiteData, setSiteText, setTestimonials, toPhoto, toProject, updateSiteData } from '../data/store'
 import { projectSlug, slugify, type Project } from '../data/projects'
 import { ADMIN_PATH } from '../route'
 import { EditContext, type EditApi } from './edit'
@@ -37,6 +38,22 @@ async function reloadAll() {
   if (!error && data) applyRows(data as (ProjectRow & { project_photos: PhotoRow[] })[])
 }
 
+/** Atualiza na tela os depoimentos aprovados */
+async function reloadTestimonials() {
+  const { data, error } = await supabase
+    .from('testimonials')
+    .select('*')
+    .eq('status', 'approved')
+    .order('sort_order')
+    .order('created_at')
+  if (!error && data) setTestimonials(data as TestimonialRow[])
+}
+
+async function pendingCount() {
+  const { count } = await supabase.from('testimonials').select('id', { count: 'exact', head: true }).eq('status', 'pending')
+  return count ?? 0
+}
+
 async function photoRows(p: Project) {
   const { data } = await supabase.from('project_photos').select('*').eq('project_id', p.id!).order('sort_order')
   return (data as PhotoRow[]) ?? []
@@ -59,6 +76,7 @@ export default function EditProvider({ children }: { children: React.ReactNode }
   const [session, setSession] = useState<Session | null>(null)
   const [on, setOn] = useState(readMode)
   const [notice, setNotice] = useState<{ text: string; error?: boolean } | null>(null)
+  const [pending, setPending] = useState(0)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -68,7 +86,9 @@ export default function EditProvider({ children }: { children: React.ReactNode }
 
   // Logado: traz também as obras ocultas (depois da carga pública, para ela não sobrescrever)
   useEffect(() => {
-    if (session) loadSiteData().then(reloadAll)
+    if (!session) return
+    loadSiteData().then(reloadAll)
+    pendingCount().then(setPending)
   }, [session])
 
   const say = useCallback((text: string, error = false) => {
@@ -213,6 +233,45 @@ export default function EditProvider({ children }: { children: React.ReactNode }
           setSiteText(key, value || null)
         }),
 
+      listTestimonials: async (status) => {
+        const { data, error } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('status', status)
+          .order('created_at', { ascending: false })
+        if (error) {
+          say(explain(error), true)
+          return []
+        }
+        return data as TestimonialRow[]
+      },
+
+      setTestimonialStatus: (id, status) =>
+        run(null, status === 'approved' ? 'Depoimento aprovado — já está no site!' : 'Depoimento retirado do site.', async () => {
+          // Aprovado entra no fim da lista do site
+          let extra = {}
+          if (status === 'approved') {
+            const { data: last } = await supabase
+              .from('testimonials')
+              .select('sort_order')
+              .order('sort_order', { ascending: false })
+              .limit(1)
+            extra = { sort_order: (last?.[0]?.sort_order ?? 0) + 1 }
+          }
+          const { error } = await supabase.from('testimonials').update({ status, ...extra }).eq('id', id)
+          if (error) throw error
+          await reloadTestimonials()
+          setPending(await pendingCount())
+        }),
+
+      updateTestimonial: (t, patch) =>
+        run(null, 'Salvo!', async () => {
+          if (!t.id) throw new Error('Depoimento ainda não está no banco')
+          const { error } = await supabase.from('testimonials').update(patch).eq('id', t.id)
+          if (error) throw error
+          await reloadTestimonials()
+        }),
+
       uploadSiteImage: (key, file) =>
         run(null, 'Foto trocada!', async () => {
           say('Enviando a foto…')
@@ -230,7 +289,7 @@ export default function EditProvider({ children }: { children: React.ReactNode }
   if (!session) return <>{children}</>
 
   return (
-    <EditContext.Provider value={{ editing: on, api }}>
+    <EditContext.Provider value={{ editing: on, api, pending }}>
       {children}
 
       <div className="fixed z-[90] bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-olive-dark text-sand-light shadow-2xl shadow-black/30 px-2 py-2 text-[10px] tracking-[0.2em] uppercase max-w-[calc(100vw-1.5rem)]">
@@ -242,6 +301,16 @@ export default function EditProvider({ children }: { children: React.ReactNode }
           <Pencil className="w-3.5 h-3.5" strokeWidth={1.75} />
           Modo edição: {on ? 'ligado' : 'desligado'}
         </button>
+        {pending > 0 && (
+          <a
+            href="/#testimonials"
+            className="flex items-center gap-2 px-3 py-2 uppercase bg-sand text-olive hover:bg-sand-light"
+            title="Depoimentos aguardando aprovação"
+          >
+            <MessageSquare className="w-3.5 h-3.5" strokeWidth={1.75} />
+            {pending} <span className="hidden sm:inline">{pending === 1 ? 'depoimento' : 'depoimentos'}</span>
+          </a>
+        )}
         <a href={ADMIN_PATH} className="flex items-center gap-2 px-3 py-2 uppercase hover:bg-white/10" title="Lista de todas as obras">
           <LayoutGrid className="w-3.5 h-3.5" strokeWidth={1.75} />
           <span className="hidden sm:inline">Painel</span>

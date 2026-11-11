@@ -1,4 +1,8 @@
+// Depoimentos originais: o site abre com eles e os troca pelos aprovados no banco (tabela
+// testimonials) assim que chegam. Se o banco falhar, continuam valendo.
 export interface Testimonial {
+  /** Identificação no banco (só existe quando veio de lá) */
+  id?: string
   name: string
   company: string
   text: string

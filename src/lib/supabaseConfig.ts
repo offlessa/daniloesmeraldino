@@ -34,3 +34,14 @@ export interface PhotoRow {
   interior: boolean
   sort_order: number
 }
+
+export interface TestimonialRow {
+  id: string
+  name: string
+  company: string
+  text: string
+  status: 'pending' | 'approved' | 'rejected'
+  project: string | null
+  sort_order: number
+  created_at: string
+}

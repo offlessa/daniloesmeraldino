@@ -3,23 +3,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SectionHeader from './SectionHeader'
 import FadeIn from './FadeIn'
 import { EASE_OUT } from '../constants/motion'
-import { STATUS_LABEL, projectSlug, projectsUrl, projectUrl } from '../data/projects'
-import { useSiteData } from '../data/store'
+import { STATUS_LABEL, projectsUrl, projectUrl } from '../data/projects'
 import { Txt } from '../admin/SiteContent'
+import { FeaturedPicker, useFeatured } from '../admin/featured'
 
 const INTERVAL = 6000
 const SWIPE = 60
 
-// Só estas aparecem no carrossel; as demais ficam em "Todos os projetos"
-const FEATURED = ['casa-lago', 'casa-je']
-
 export default function Portfolio() {
-  const { projects } = useSiteData()
-  const featured = projects.filter((p) => FEATURED.includes(projectSlug(p)))
-  const [current, setCurrent] = useState(0)
+  // Só os destaques aparecem no carrossel (o administrador escolhe); as demais ficam em "Todos os projetos"
+  const featured = useFeatured()
+  const [index, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
 
   const total = featured.length
+  // A lista pode encolher quando o administrador muda os destaques
+  const current = total ? index % total : 0
   const project = featured[current]
 
   const go = (dir: number) => setCurrent((c) => (c + dir + total) % total)
@@ -30,6 +29,8 @@ export default function Portfolio() {
     return () => clearTimeout(t)
   }, [current, paused, total])
 
+  if (!project) return null
+
   return (
     <section id="portfolio" className="relative py-32 lg:py-40 px-6 sm:px-10 lg:px-20 border-t border-sand">
       <SectionHeader
@@ -37,6 +38,7 @@ export default function Portfolio() {
         label={<Txt k="portfolio.label" d="Portfólio" />}
         title={<Txt k="portfolio.title" d="Projetos em *destaque*" em="text-olive-light" />}
       />
+      <FeaturedPicker />
 
       <FadeIn>
         <div
