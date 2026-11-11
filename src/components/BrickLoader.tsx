@@ -23,13 +23,13 @@ const BRICKS = Array.from({ length: ROWS }, (_, r) => {
 const BUILD = 0.6
 
 /** Pequena parede que se monta tijolo por tijolo, segura um instante e recomeça. */
-export default function BrickLoader({ duration = 3.2, className = '' }: { duration?: number; className?: string }) {
+export default function BrickLoader({ duration = 3.2, className = 'w-28' }: { duration?: number; className?: string }) {
   const reduce = useReducedMotion()
 
   return (
     <svg
       viewBox={`-2 -2 ${WIDTH + 4} ${HEIGHT + 4}`}
-      className={`w-28 h-auto ${className}`}
+      className={`h-auto ${className}`}
       role="img"
       aria-label="Parede de tijolos sendo construída"
     >

@@ -105,7 +105,7 @@ function StateMap({ location }: { location: string }) {
 function NotFound() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-white">
-      <BrickLoader className="mb-10" />
+      <BrickLoader className="w-28 mb-10" />
       <p className="font-serif text-3xl text-olive">Projeto não encontrado.</p>
       <p className="mt-3 text-primary-600">Esta página ainda está em obra.</p>
       <a href={projectsUrl()} className="mt-6 link-underline text-[11px] tracking-[0.3em] uppercase">

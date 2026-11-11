@@ -269,7 +269,7 @@ export default function ProjectsPage() {
             </div>
           ) : (
             <div className="px-6 py-20 text-center">
-              <BrickLoader className="mx-auto mb-10" />
+              <BrickLoader className="w-28 mx-auto mb-10" />
               <p className="font-serif text-2xl sm:text-3xl text-olive">Novos projetos em breve.</p>
               <p className="mt-4 text-primary-600">
                 Quer começar o seu?{' '}

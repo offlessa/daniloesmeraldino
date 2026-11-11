@@ -465,4 +465,8 @@ export const galleries: Record<string, { src: string; w: number; h: number; inte
     { src: '/images/web/projetos/bar-facil/33.jpg', w: 2000, h: 1126, interior: true },
     { src: '/images/web/projetos/bar-facil/34.jpg', w: 1265, h: 1012, interior: true },
   ],
+  'casa-es': [
+    { src: '/images/web/projetos/casa-es/01.jpg', w: 1334, h: 2000 },
+    { src: '/images/web/projetos/casa-es/02.jpg', w: 1030, h: 1528 },
+  ],
 }

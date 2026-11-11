@@ -9,6 +9,7 @@ import About from './components/About'
 import Testimonials from './components/Testimonials'
 import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
+import DevNotice from './components/DevNotice'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectPage from './pages/ProjectPage'
 import QuizPage from './pages/QuizPage'
@@ -57,6 +58,7 @@ function App() {
         <Home />
       )}
       <WhatsAppButton />
+      <DevNotice />
     </>
   )
 }

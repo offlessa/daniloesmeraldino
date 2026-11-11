@@ -152,6 +152,16 @@ export const projects: Project[] = [
       'Um sobrado contemporâneo de volumes recortados, em que o painel em tom terracota marca a fachada entre o vidro e os volumes claros.',
   },
   {
+    title: 'Casa ES',
+    category: 'Residência',
+    type: 'residencial',
+    year: '',
+    status: 'concluido',
+    image: '/images/web/portfolio-casa-es.jpg',
+    description:
+      'Uma fachada de linhas retas em que a pedra clara de recorte irregular, o painel de madeira e o vidro de pé-direito alto marcam a entrada. O beiral em balanço, forrado de madeira, sombreia o acesso pelo jardim.',
+  },
+  {
     title: 'Casa Sobrado',
     category: 'Interiores',
     type: 'interiores',
