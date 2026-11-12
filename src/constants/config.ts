@@ -18,7 +18,7 @@ export const COMPANY = {
 export const CONTACT = {
   phone: '+5548988285002',
   phoneFormatted: '(48) 3234-5678',
-  email: 'danilo.esmeraldino@gmail.com.br',
+  email: 'danilo.esmeraldino@gmail.com',
   whatsapp: '5548988285002', // Sem símbolos
 }
 

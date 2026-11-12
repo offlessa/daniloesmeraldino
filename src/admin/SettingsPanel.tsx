@@ -3,6 +3,7 @@ import { Loader2, RefreshCw, Send } from 'lucide-react'
 import { readSettings, rebuildSite, saveSettings, type SettingKey } from './settings'
 import { supabase } from '../lib/supabase'
 import { NOTIFY_KEY, notifyByEmail, setSiteText } from '../data/store'
+import { CONTACT } from '../constants/config'
 
 const FIELD =
   'w-full border-b border-olive/25 bg-transparent py-2.5 text-base text-primary-800 placeholder:text-primary-400 focus:outline-none focus:border-olive transition-colors'
@@ -26,7 +27,7 @@ export default function SettingsPanel() {
       .select('value')
       .eq('key', NOTIFY_KEY)
       .maybeSingle()
-      .then(({ data }) => setNotify(data?.value ?? ''))
+      .then(({ data }) => setNotify(data?.value ?? CONTACT.email))
   }, [])
 
   if (!values) return <Loader2 className="w-6 h-6 animate-spin text-olive" />

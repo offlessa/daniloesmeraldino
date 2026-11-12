@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { CONTACT } from '../constants/config'
 import { projects as staticProjects, projectSlug, type Project } from './projects'
 import { galleries as staticGalleries } from './galleries'
 import { testimonials as staticTestimonials, type Testimonial } from './testimonials'
@@ -147,7 +148,7 @@ export async function sendTestimonial(t: { name: string; company: string; text: 
   })
   if (!res.ok) throw new Error(`envio recusado (${res.status})`)
   // Aviso por e-mail ao escritório (endereço escolhido no painel). Se falhar, o depoimento já foi salvo.
-  notifyByEmail(data.texts[NOTIFY_KEY], t).catch(() => {})
+  notifyByEmail(data.texts[NOTIFY_KEY] ?? CONTACT.email, t).catch(() => {})
 }
 
 /** Onde fica, entre os textos do site, o e-mail que recebe o aviso de depoimento novo */

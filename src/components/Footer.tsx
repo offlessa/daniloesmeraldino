@@ -8,7 +8,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
   // Telefone e e-mail também viram os links de ligar e escrever
   const phone = useSiteText('footer.phone', '(48) 98828-5002')
-  const email = useSiteText('footer.email', 'danilo.esmeraldino@gmail.com.br')
+  const email = useSiteText('footer.email', 'danilo.esmeraldino@gmail.com')
 
   return (
     <footer id="contact" className="relative bg-olive text-sand pt-32 lg:pt-44 pb-10 px-6 sm:px-10 lg:px-20">
@@ -44,7 +44,7 @@ export default function Footer() {
         <div>
           <p className="text-[10px] tracking-[0.35em] uppercase text-sand/55 mb-3">E-mail</p>
           <a href={`mailto:${email.trim()}`} className="text-sm text-sand-light hover:text-white break-all">
-            <Txt k="footer.email" d="danilo.esmeraldino@gmail.com.br" />
+            <Txt k="footer.email" d="danilo.esmeraldino@gmail.com" />
           </a>
         </div>
         <div>
