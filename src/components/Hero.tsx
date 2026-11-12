@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { INTRO_DELAY, EASE_OUT } from '../constants/motion'
 import { ImageSwap, Txt, useSiteImage } from '../admin/SiteContent'
+import { SIZES, srcSet } from '../lib/images'
 
 const HERO_IMAGE = '/images/web/hero-background.jpg'
 
@@ -77,6 +78,8 @@ export default function Hero() {
         >
           <img
             src={image}
+            srcSet={srcSet(image)}
+            sizes={SIZES.wide}
             alt="Casa Lago — Estúdio Danilo Esmeraldino"
             className="absolute inset-0 w-full h-full object-cover"
           />

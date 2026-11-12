@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { SIZES, srcSet } from '../lib/images'
 
 const SWIPE = 60
 
@@ -92,6 +93,8 @@ export default function Lightbox({ photos, index, alt, onChange }: LightboxProps
             <motion.img
               key={photos[index].src}
               src={photos[index].src}
+              srcSet={srcSet(photos[index].src)}
+              sizes={SIZES.full}
               alt={alt}
               draggable={false}
               onClick={(e) => e.stopPropagation()}

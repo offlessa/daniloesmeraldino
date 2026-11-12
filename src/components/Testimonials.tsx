@@ -4,6 +4,7 @@ import { EyeOff } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import ParallaxRect from './ParallaxRect'
 import TestimonialForm from './TestimonialForm'
+import GoogleReviews from './GoogleReviews'
 import { useSiteData } from '../data/store'
 import { Txt } from '../admin/SiteContent'
 import { EditableText, useEdit } from '../admin/edit'
@@ -82,6 +83,7 @@ export default function Testimonials() {
             <Txt k="testimonials.cta" d="Deixe seu depoimento" />
             <span className="block w-8 h-px bg-olive group-hover:w-14 transition-all duration-500" />
           </button>
+          <GoogleReviews />
 
           <div>
             <TestimonialModeration />

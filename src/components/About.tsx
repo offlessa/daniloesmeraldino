@@ -4,6 +4,7 @@ import ParallaxRect from './ParallaxRect'
 import FadeIn from './FadeIn'
 import { ImageSwap, Txt, useSiteImage, useSiteList } from '../admin/SiteContent'
 import { useEdit } from '../admin/edit'
+import { SIZES, srcSet } from '../lib/images'
 
 const REVEAL_RADIUS = 140
 
@@ -43,12 +44,16 @@ function ObraReveal() {
     >
       <img
         src={done}
+        srcSet={srcSet(done)}
+        sizes={SIZES.wide}
         alt="Casa Esmeralda — Estúdio Danilo Esmeraldino"
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <motion.img
         src={building}
+        srcSet={srcSet(building)}
+        sizes={SIZES.wide}
         alt="Casa Esmeralda durante a obra"
         loading="lazy"
         style={{ clipPath }}

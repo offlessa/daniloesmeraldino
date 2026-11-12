@@ -9,7 +9,9 @@ import { EASE_OUT } from '../constants/motion'
 import { useSiteData, type Photo } from '../data/store'
 import { EditableText, useEdit, type ProjectPatch } from '../admin/edit'
 import { CoverButton, EditGallery, ProjectAdminBar, StatusValue } from '../admin/ProjectEditing'
-import { DEFAULT_LOCATION, locate } from '../data/locations'
+import { SIZES, srcSet } from '../lib/images'
+import { DEFAULT_LOCATION } from '../data/locations'
+import RegionMap from '../components/RegionMap'
 import { INTERIORS_ID, projectSlug, projectUrl, projectsUrl, type Project } from '../data/projects'
 
 /**
@@ -60,53 +62,6 @@ function Fact({
         {children ?? (editable ? <EditableText value={value ?? ''} onSave={onSave} placeholder={placeholder} /> : value)}
       </dd>
     </div>
-  )
-}
-
-// Pin recortado de fdgs.png: a ponta fica a 55% da largura, na base da imagem
-const PIN_TIP_X = 55
-
-/** Desenho do estado com o pin caindo sobre a cidade da obra. */
-function StateMap({ location }: { location: string }) {
-  const place = locate(location)
-  if (!place) return null
-  const { city, state, x, y } = place
-
-  return (
-    <section className="px-6 sm:px-10 lg:px-20 pb-24 lg:pb-32">
-      <div className="max-w-6xl mx-auto grid gap-12 lg:grid-cols-12 items-center border-t border-olive/15 pt-20 lg:pt-28">
-        <FadeIn className="lg:col-span-4">
-          <p className="text-[11px] tracking-[0.35em] uppercase text-olive-light">Localização</p>
-          <p className="mt-5 font-serif text-4xl sm:text-5xl text-olive">{city}</p>
-          <p className="mt-3 text-[11px] tracking-[0.3em] uppercase text-primary-500">{state.name}</p>
-        </FadeIn>
-
-        <FadeIn className="lg:col-span-8" delay={0.1}>
-          <div className="relative w-full" style={{ aspectRatio: state.ratio }}>
-            <img
-              src={state.image}
-              alt={`Mapa de ${state.name}`}
-              loading="lazy"
-              className="absolute inset-0 w-full h-full"
-            />
-            <div
-              className="absolute w-[6%] min-w-[26px]"
-              style={{ left: `${x}%`, top: `${y}%`, transform: `translate(-${PIN_TIP_X}%, -100%)` }}
-            >
-              <motion.img
-                src="/images/web/mapas/pin.png"
-                alt={`Pin em ${city}`}
-                className="block w-full h-auto drop-shadow-lg"
-                initial={{ opacity: 0, y: -40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 14 }}
-              />
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
   )
 }
 
@@ -192,6 +147,8 @@ function GalleryRows({ rows, alt, onOpen }: { rows: Photo[][]; alt: string; onOp
             <button onClick={() => onOpen(row[0])} aria-label="Ampliar foto" className="block w-full cursor-zoom-in">
               <img
                 src={row[0].src}
+                srcSet={srcSet(row[0].src)}
+                sizes={row[0].h > row[0].w ? SIZES.half : SIZES.gallery}
                 alt={alt}
                 loading="lazy"
                 width={row[0].w}
@@ -212,6 +169,8 @@ function GalleryRows({ rows, alt, onOpen }: { rows: Photo[][]; alt: string; onOp
                 >
                   <img
                     src={photo.src}
+                    srcSet={srcSet(photo.src)}
+                    sizes={SIZES.half}
                     alt={alt}
                     loading="lazy"
                     width={photo.w}
@@ -270,6 +229,8 @@ export default function ProjectPage({ slug }: { slug: string }) {
       <section className="relative h-[78vh] sm:h-screen">
         <motion.img
           src={project.image}
+          srcSet={srcSet(project.image)}
+          sizes={SIZES.full}
           alt={project.title}
           style={project.imagePosition ? { objectPosition: project.imagePosition } : undefined}
           className="absolute inset-0 w-full h-full object-cover"
@@ -377,7 +338,7 @@ export default function ProjectPage({ slug }: { slug: string }) {
 
       <ClientWords slug={slug} />
 
-      <StateMap location={location} />
+      <RegionMap location={location} current={slug} />
 
       <ProjectCta project={project} />
 
@@ -385,6 +346,8 @@ export default function ProjectPage({ slug }: { slug: string }) {
       <a href={projectUrl(next)} className="group relative block h-[70vh] sm:h-[85vh] overflow-hidden">
         <img
           src={next.image}
+          srcSet={srcSet(next.image)}
+          sizes={SIZES.full}
           alt={next.title}
           loading="lazy"
           style={next.imagePosition ? { objectPosition: next.imagePosition } : undefined}

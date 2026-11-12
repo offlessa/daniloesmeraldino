@@ -14,6 +14,7 @@ import ProjectsPage from './pages/ProjectsPage'
 import ProjectPage from './pages/ProjectPage'
 import QuizPage from './pages/QuizPage'
 import QuizCta from './components/QuizCta'
+import Faq from './components/Faq'
 import { INTRO_DELAY } from './constants/motion'
 import { route, IS_HOME } from './route'
 import { loadSiteData } from './data/store'
@@ -39,6 +40,7 @@ function Home() {
       <Process />
       <QuizCta />
       <About />
+      <Faq />
       <Testimonials />
       <Footer />
     </main>

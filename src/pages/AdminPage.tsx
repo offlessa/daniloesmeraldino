@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
 import { removeStored, uploadPhoto } from '../admin/photos'
+import SettingsPanel from '../admin/SettingsPanel'
 import { STATUS_LABEL, slugify } from '../data/projects'
 
 // Visual do painel: o mesmo do site, mais enxuto
@@ -487,6 +488,7 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
 export default function AdminPage() {
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [tab, setTab] = useState<'obras' | 'config'>(() => (window.location.hash === '#configuracoes' ? 'config' : 'obras'))
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -515,7 +517,21 @@ export default function AdminPage() {
             <img src="/images/danilo-esmeraldino-logo.png" alt="Danilo Esmeraldino" className="h-9 w-auto" />
           </a>
           <div className="flex items-center gap-5">
-            <span className="hidden sm:inline text-sm text-primary-500">{session.user.email}</span>
+            {(['obras', 'config'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  setTab(t)
+                  open(null)
+                }}
+                className={`text-[10px] tracking-[0.3em] uppercase pb-1 border-b ${
+                  tab === t ? 'border-olive text-olive' : 'border-transparent text-primary-500 hover:text-olive'
+                }`}
+              >
+                {t === 'obras' ? 'Obras' : 'Configurações'}
+              </button>
+            ))}
+            <span className="hidden lg:inline text-sm text-primary-500">{session.user.email}</span>
             <a href="/" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-olive">
               <Eye className="w-4 h-4" strokeWidth={1.5} /> Site
             </a>
@@ -529,7 +545,13 @@ export default function AdminPage() {
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {openId ? <ProjectEditor id={openId} onBack={() => open(null)} /> : <ProjectList onOpen={open} />}
+        {tab === 'config' ? (
+          <SettingsPanel />
+        ) : openId ? (
+          <ProjectEditor id={openId} onBack={() => open(null)} />
+        ) : (
+          <ProjectList onOpen={open} />
+        )}
       </div>
       <p className="max-w-6xl mx-auto px-6 pb-10 text-xs text-primary-400 flex items-center gap-2">
         <EyeOff className="w-3.5 h-3.5" /> Página privada — só quem tem conta de administrador entra aqui.

@@ -1,35 +1,12 @@
-// Mapas dos estados (recortados das artes em public/images/Logos) e as cidades onde há projetos.
-// Os desenhos seguem a projeção lat/long simples, então a posição do pin é uma regra de três
-// entre os extremos do estado.
+// Cidades das obras. O mapa da região (src/data/regionMap.json, malha de municípios do IBGE
+// de Porto Alegre a Itajaí) é gerado em projeção lat/long simples: a posição do pin é uma
+// conta direta a partir da latitude e longitude da sede da cidade.
 
-export type StateCode = 'SC' | 'RS'
+export const STATE_NAMES: Record<string, string> = { SC: 'Santa Catarina', RS: 'Rio Grande do Sul' }
 
-export const STATES: Record<
-  StateCode,
-  { name: string; image: string; ratio: number; west: number; east: number; north: number; south: number }
-> = {
-  SC: {
-    name: 'Santa Catarina',
-    image: '/images/web/mapas/sc.png',
-    ratio: 893 / 558,
-    west: -53.836,
-    east: -48.358,
-    north: -25.955,
-    south: -29.351,
-  },
-  RS: {
-    name: 'Rio Grande do Sul',
-    image: '/images/web/mapas/rs.png',
-    ratio: 894 / 756,
-    west: -57.643,
-    east: -49.691,
-    north: -27.082,
-    south: -33.751,
-  },
-}
-
-// [latitude, longitude]
-const CITIES: Record<string, [number, number]> = {
+// Sede das cidades: [latitude, longitude]. Cidade da região sem coordenada aqui ganha o
+// pin no meio do município.
+export const CITIES: Record<string, [number, number]> = {
   'tubarao-sc': [-28.4667, -49.0069],
   'capivari-de-baixo-sc': [-28.4447, -48.9583],
   'laguna-sc': [-28.4825, -48.7808],
@@ -48,9 +25,13 @@ const CITIES: Record<string, [number, number]> = {
   'cocal-do-sul-sc': [-28.6008, -49.3258],
   'florianopolis-sc': [-27.5954, -48.548],
   'biguacu-sc': [-27.4942, -48.6556],
+  'itajai-sc': [-26.9078, -48.6619],
+  'blumenau-sc': [-26.9194, -49.0661],
+  'lages-sc': [-27.8161, -50.3261],
   'torres-rs': [-29.335, -49.7269],
   'capao-da-canoa-rs': [-29.7456, -50.0097],
   'xangri-la-rs': [-29.8064, -50.0519],
+  'osorio-rs': [-29.8869, -50.2697],
   'porto-alegre-rs': [-30.0346, -51.2177],
   'gramado-rs': [-29.3789, -50.8739],
   'caxias-do-sul-rs': [-29.1678, -51.1794],
@@ -58,7 +39,7 @@ const CITIES: Record<string, [number, number]> = {
 
 export const DEFAULT_LOCATION = 'Tubarão, SC'
 
-const key = (s: string) =>
+export const cityKey = (s: string) =>
   s
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
@@ -66,17 +47,10 @@ const key = (s: string) =>
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
 
-/** "Tubarão, SC" → estado, cidade e posição do pin em % sobre o desenho do estado. */
-export function locate(location: string) {
-  const [city, uf] = location.split(/\s*[,/-]\s*(?=[A-Za-z]{2}$)/)
-  const state = STATES[(uf ?? '').toUpperCase() as StateCode]
-  const coords = CITIES[`${key(city)}-${key(uf ?? '')}`]
-  if (!state || !coords) return null
-  const [lat, lon] = coords
-  return {
-    city: city.trim(),
-    state,
-    x: ((lon - state.west) / (state.east - state.west)) * 100,
-    y: ((state.north - lat) / (state.north - state.south)) * 100,
-  }
+/** "Tubarão, SC" → cidade, estado e a chave usada no mapa ("tubarao-sc"). */
+export function parseLocation(location: string) {
+  const [city, uf = ''] = location.split(/\s*[,/-]\s*(?=[A-Za-z]{2}$)/)
+  const state = uf.toUpperCase()
+  if (!STATE_NAMES[state]) return null
+  return { city: city.trim(), state: STATE_NAMES[state], key: `${cityKey(city)}-${cityKey(uf)}` }
 }

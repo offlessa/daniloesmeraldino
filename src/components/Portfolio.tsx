@@ -6,6 +6,7 @@ import { EASE_OUT } from '../constants/motion'
 import { STATUS_LABEL, projectsUrl, projectUrl } from '../data/projects'
 import { Txt } from '../admin/SiteContent'
 import { FeaturedPicker, useFeatured } from '../admin/featured'
+import { SIZES, srcSet } from '../lib/images'
 
 const INTERVAL = 6000
 const SWIPE = 60
@@ -63,6 +64,8 @@ export default function Portfolio() {
                 <motion.img
                   key={project.image}
                   src={project.image}
+                  srcSet={srcSet(project.image)}
+                  sizes={SIZES.full}
                   alt={project.title}
                   draggable={false}
                   style={project.imagePosition ? { objectPosition: project.imagePosition } : undefined}

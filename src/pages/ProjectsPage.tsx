@@ -22,6 +22,7 @@ import {
 } from '../data/projects'
 import { galleryOf, useSiteData, type Photo, type SiteData } from '../data/store'
 import { useEdit } from '../admin/edit'
+import { SIZES, srcSet } from '../lib/images'
 import { DEFAULT_LOCATION } from '../data/locations'
 
 const ALL_PLACES = 'todas'
@@ -92,6 +93,8 @@ function ProjectCard({ project, interior }: { project: Project; interior?: Photo
       <div className="relative overflow-hidden aspect-[16/9] bg-sand-light">
         <img
           src={interior?.src ?? project.image}
+          srcSet={srcSet(interior?.src ?? project.image)}
+          sizes={SIZES.card}
           alt={interior ? `${project.title} — interiores` : project.title}
           loading="lazy"
           style={!interior && project.imagePosition ? { objectPosition: project.imagePosition } : undefined}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { LayoutGrid, LogOut, MessageSquare, Pencil } from 'lucide-react'
+import { LayoutGrid, LogOut, MessageSquare, Pencil, RefreshCw } from 'lucide-react'
 import { supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
 import type { TestimonialRow } from '../lib/supabaseConfig'
 import { applyRows, loadSiteData, setSiteText, setTestimonials, toPhoto, toProject, updateSiteData } from '../data/store'
@@ -8,6 +8,7 @@ import { projectSlug, slugify, type Project } from '../data/projects'
 import { ADMIN_PATH } from '../route'
 import { EditContext, type EditApi } from './edit'
 import { removeStored, uploadPhoto } from './photos'
+import { rebuildSite } from './settings'
 
 const MODE_KEY = 'modo-edicao'
 
@@ -311,6 +312,22 @@ export default function EditProvider({ children }: { children: React.ReactNode }
             {pending} <span className="hidden sm:inline">{pending === 1 ? 'depoimento' : 'depoimentos'}</span>
           </a>
         )}
+        <button
+          onClick={async () => {
+            try {
+              const result = await rebuildSite()
+              if (result === 'ok') say('Atualização iniciada! Em uns 2 minutos o Google e as prévias veem o site atual.')
+              else say('Falta configurar: Painel → Configurações → link de atualização da Vercel.', true)
+            } catch {
+              say('Não foi possível pedir a atualização agora.', true)
+            }
+          }}
+          className="flex items-center gap-2 px-3 py-2 uppercase hover:bg-white/10"
+          title="Atualizar o que aparece no Google e nas prévias de link"
+        >
+          <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.75} />
+          <span className="hidden md:inline">Atualizar Google</span>
+        </button>
         <a href={ADMIN_PATH} className="flex items-center gap-2 px-3 py-2 uppercase hover:bg-white/10" title="Lista de todas as obras">
           <LayoutGrid className="w-3.5 h-3.5" strokeWidth={1.75} />
           <span className="hidden sm:inline">Painel</span>
