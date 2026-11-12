@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EyeOff } from 'lucide-react'
 import SectionHeader from './SectionHeader'
-import ParallaxRect from './ParallaxRect'
 import TestimonialForm from './TestimonialForm'
 import GoogleReviews from './GoogleReviews'
 import { useSiteData } from '../data/store'
@@ -38,13 +37,6 @@ export default function Testimonials() {
       id="testimonials"
       className="relative z-10 py-32 lg:py-40 px-6 sm:px-10 lg:px-20 border-t border-sand"
     >
-      {/* Bloco que desce e se funde ao rodapé oliva */}
-      <ParallaxRect
-        className="left-[12%] -bottom-24 w-14 sm:w-20 h-48 sm:h-64"
-        speed={50}
-        grow="bottom"
-      />
-
       <div className="relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-8">
         <div className="lg:col-span-4">
           <SectionHeader
