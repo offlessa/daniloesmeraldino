@@ -2,8 +2,7 @@ import { motion, useMotionTemplate, useMotionValue, useSpring } from 'framer-mot
 import SectionHeader from './SectionHeader'
 import ParallaxRect from './ParallaxRect'
 import FadeIn from './FadeIn'
-import { ImageSwap, Txt, useSiteImage, useSiteList } from '../admin/SiteContent'
-import { useEdit } from '../admin/edit'
+import { ImageSwap, Txt, useSiteImage } from '../admin/SiteContent'
 import { SIZES, srcSet } from '../lib/images'
 
 const REVEAL_RADIUS = 140
@@ -68,18 +67,7 @@ function ObraReveal() {
   )
 }
 
-const services = [
-  'Projetos Residenciais',
-  'Projetos Comerciais',
-  'Projetos de Interiores',
-  'Projetos de Engenharia',
-  'Gerenciamento de Obras',
-  'Reformas',
-]
-
 export default function About() {
-  const { editing } = useEdit()
-  const serviceList = useSiteList('about.services', services)
   return (
     <section id="about" className="relative py-32 lg:py-44 px-6 sm:px-10 lg:px-20">
       <ParallaxRect className="right-0 top-24 w-1/3 lg:w-1/5 h-2" speed={30} grow="right" />
@@ -111,26 +99,6 @@ export default function About() {
                 multiline
               />
             </p>
-          </FadeIn>
-
-          <FadeIn className="mt-12 border-t border-olive/20" delay={0.1}>
-            {editing ? (
-              // Um serviço por linha
-              <div className="border-b border-olive/20 py-4 text-[12px] tracking-[0.25em] uppercase text-olive leading-[2.6]">
-                <Txt k="about.services" d={services.join('\n')} multiline />
-              </div>
-            ) : (
-              <ul>
-                {serviceList.map((s) => (
-                  <li
-                    key={s}
-                    className="border-b border-olive/20 py-4 text-[12px] tracking-[0.25em] uppercase text-olive"
-                  >
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
           </FadeIn>
         </div>
       </div>

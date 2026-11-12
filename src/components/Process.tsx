@@ -88,6 +88,31 @@ const DETAILS: Record<string, { items: string[]; note?: string }> = {
   comunicacao: {
     items: ['Instalação de interfone, telefone, TV e internet', 'Detalhes'],
   },
+  interiores: {
+    items: [
+      'Layout de todos os ambientes e estudo do mobiliário',
+      'Imagens 3D realistas da área social e da área íntima',
+      'Detalhamento de marcenaria e mobiliário',
+      'Detalhamento de gesso e projeto luminotécnico',
+      'Paginação de revestimentos e pontos elétricos e hidráulicos',
+      'Especificação de materiais, acabamentos e apoio nos orçamentos com as lojas',
+    ],
+  },
+  'aprovacao-na-prefeitura': {
+    items: [
+      'Preparação de toda a documentação exigida pela prefeitura',
+      'Projeto legal conforme o plano diretor e o código de obras da cidade',
+      'Acompanhamento do processo até a emissão do alvará de construção',
+    ],
+  },
+  curadoria: {
+    items: [
+      'Seleção de revestimentos, louças, metais e iluminação',
+      'Indicação de móveis, objetos e peças de decoração',
+      'Visitas guiadas a lojas e fornecedores parceiros',
+      'Escolhas alinhadas ao projeto e ao orçamento da obra',
+    ],
+  },
   paisagismo: {
     items: ['Projeto de muro (opcional) e de todo o entorno do terreno: piscina, jardim, áreas externas e paisagismo'],
   },
