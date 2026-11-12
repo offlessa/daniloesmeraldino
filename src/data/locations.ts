@@ -25,6 +25,7 @@ export const CITIES: Record<string, [number, number]> = {
   'cocal-do-sul-sc': [-28.6008, -49.3258],
   'florianopolis-sc': [-27.5954, -48.548],
   'biguacu-sc': [-27.4942, -48.6556],
+  'antonio-carlos-sc': [-27.5172, -48.7661],
   'itajai-sc': [-26.9078, -48.6619],
   'blumenau-sc': [-26.9194, -49.0661],
   'lages-sc': [-27.8161, -50.3261],
