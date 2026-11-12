@@ -1,8 +1,32 @@
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import FadeIn from './FadeIn'
 import { social, whatsappUrl } from '../constants/social'
 import { Txt, useSiteText } from '../admin/SiteContent'
 
 const WHATSAPP = whatsappUrl('Olá! Gostaria de conversar sobre um projeto.')
+
+// "Trabalhe conosco" abre pelo endereço #trabalhe-conosco (rodapé, menu ou link compartilhado)
+export const CAREERS_HASH = '#trabalhe-conosco'
+const CareersModal = lazy(() => import('./CareersModal'))
+
+function Careers() {
+  const [open, setOpen] = useState(() => window.location.hash === CAREERS_HASH)
+  useEffect(() => {
+    const onHash = () => setOpen(window.location.hash === CAREERS_HASH)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  const close = useCallback(() => {
+    setOpen(false)
+    history.replaceState(null, '', window.location.pathname + window.location.search)
+  }, [])
+  if (!open) return null
+  return (
+    <Suspense fallback={null}>
+      <CareersModal open onClose={close} />
+    </Suspense>
+  )
+}
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -67,6 +91,9 @@ export default function Footer() {
 
       <div className="mt-20 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] tracking-[0.25em] uppercase text-sand/45">
         <p>© {currentYear} Estúdio Danilo Esmeraldino</p>
+        <a href={CAREERS_HASH} className="hover:text-sand-light">
+          Trabalhe conosco
+        </a>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="hover:text-sand-light"
@@ -74,6 +101,8 @@ export default function Footer() {
           Voltar ao topo ↑
         </button>
       </div>
+
+      <Careers />
     </footer>
   )
 }

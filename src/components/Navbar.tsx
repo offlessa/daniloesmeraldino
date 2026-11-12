@@ -199,6 +199,14 @@ export default function Navbar() {
               </div>
 
               <a
+                href="#trabalhe-conosco"
+                onClick={() => setIsOpen(false)}
+                className="mt-10 self-center border-b border-sand/40 pb-1 text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-sand-light hover:border-white hover:text-white transition-colors"
+              >
+                Trabalhe conosco
+              </a>
+
+              <a
                 href={ADMIN_PATH}
                 className="mt-10 self-center text-[9px] tracking-[0.3em] uppercase text-sand/50 hover:text-sand-light transition-colors"
               >
