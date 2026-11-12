@@ -280,7 +280,6 @@ export const galleries: Record<string, { src: string; w: number; h: number; inte
     { src: '/images/web/projetos/casa-azambuja/08.jpg', w: 958, h: 1280 },
     { src: '/images/web/projetos/casa-azambuja/09.jpg', w: 1280, h: 958 },
     { src: '/images/web/projetos/casa-azambuja/10.jpg', w: 958, h: 1280 },
-    { src: '/images/web/projetos/casa-azambuja/11.jpg', w: 958, h: 1280, interior: true },
   ],
   'casa-sobrado': [
     { src: '/images/web/projetos/casa-sobrado/01.jpg', w: 1334, h: 2000, interior: true },
