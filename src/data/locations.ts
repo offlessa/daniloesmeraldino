@@ -15,6 +15,7 @@ export const CITIES: Record<string, [number, number]> = {
   'sangao-sc': [-28.6328, -49.1306],
   'treze-de-maio-sc': [-28.5536, -49.1497],
   'gravatal-sc': [-28.3236, -49.0408],
+  'pedras-grandes-sc': [-28.4344, -49.1872],
   'armazem-sc': [-28.2464, -49.0181],
   'braco-do-norte-sc': [-28.2753, -49.1658],
   'imbituba-sc': [-28.24, -48.6703],
