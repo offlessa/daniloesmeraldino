@@ -388,7 +388,7 @@ export const projects: Project[] = [
       'Térrea, com um volume branco que abriga a garagem e uma entrada marcada por madeira e caixilhos escuros. Nos fundos, a piscina estreita acompanha o jardim e um pátio de convívio.',
   },
   {
-    title: 'Casa Lá',
+    title: 'Casa La',
     category: 'Residência',
     type: 'residencial',
     year: '',
