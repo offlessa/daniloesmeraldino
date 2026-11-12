@@ -33,6 +33,7 @@ export const CITIES: Record<string, [number, number]> = {
   'xangri-la-rs': [-29.8064, -50.0519],
   'osorio-rs': [-29.8869, -50.2697],
   'porto-alegre-rs': [-30.0346, -51.2177],
+  'viamao-rs': [-30.0811, -51.0233],
   'gramado-rs': [-29.3789, -50.8739],
   'caxias-do-sul-rs': [-29.1678, -51.1794],
 }

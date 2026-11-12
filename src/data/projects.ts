@@ -153,6 +153,7 @@ export const projects: Project[] = [
     type: 'residencial',
     year: '',
     status: 'concluido',
+    location: 'Viamão, RS',
     image: '/images/web/portfolio-casa-buena.jpg',
     description:
       'Um sobrado contemporâneo de volumes recortados, em que o painel em tom terracota marca a fachada entre o vidro e os volumes claros.',
