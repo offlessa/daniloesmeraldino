@@ -5,7 +5,7 @@ import FadeIn from './FadeIn'
 import { EASE_OUT } from '../constants/motion'
 import { STATUS_LABEL, projectsUrl, projectUrl } from '../data/projects'
 import { Txt } from '../admin/SiteContent'
-import { FeaturedPicker, useFeatured } from '../admin/featured'
+import { FeaturedPhotoButton, FeaturedPicker, useFeatured } from '../admin/featured'
 import { SIZES, srcSet } from '../lib/images'
 
 const INTERVAL = 6000
@@ -76,6 +76,7 @@ export default function Portfolio() {
                   transition={{ duration: 1.1, ease: EASE_OUT }}
                 />
               </AnimatePresence>
+              <FeaturedPhotoButton project={project} />
               <span className="absolute top-0 left-0 bg-white/95 px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase text-olive">
                 {STATUS_LABEL[project.status]}
               </span>
