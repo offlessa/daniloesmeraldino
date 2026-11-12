@@ -8,6 +8,7 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
+  FolderOpen,
   Loader2,
   LogOut,
   Plus,
@@ -19,6 +20,7 @@ import {
 import { supabase, type PhotoRow, type ProjectRow } from '../lib/supabase'
 import { removeStored, uploadPhoto } from '../admin/photos'
 import SettingsPanel from '../admin/SettingsPanel'
+import FolderImport, { filesFromDrop, filesFromInput, nameFromFolder, type PickedFile } from '../admin/FolderImport'
 import { STATUS_LABEL, slugify } from '../data/projects'
 
 // Visual do painel: o mesmo do site, mais enxuto
@@ -91,9 +93,13 @@ function Login() {
 
 type ProjectWithCount = ProjectRow & { project_photos: { count: number }[] }
 
-function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
+// O navegador só deixa escolher pasta inteira com este atributo (não está nos tipos do React)
+const FOLDER_PICKER = { webkitdirectory: '', directory: '' } as React.InputHTMLAttributes<HTMLInputElement>
+
+function ProjectList({ onOpen }: { onOpen: (id: string, files?: PickedFile[]) => void }) {
   const [rows, setRows] = useState<ProjectWithCount[] | null>(null)
   const [error, setError] = useState('')
+  const folderInput = useRef<HTMLInputElement>(null)
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('projects').select('*, project_photos(count)').order('sort_order')
@@ -121,8 +127,9 @@ function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
     ])
   }
 
-  const create = async () => {
-    const title = window.prompt('Nome da nova obra (ex.: Casa Jacarandá):')?.trim()
+  const create = async (files?: PickedFile[]) => {
+    const suggested = files ? nameFromFolder(files) : ''
+    const title = window.prompt('Nome da nova obra (ex.: Casa Jacarandá):', suggested)?.trim()
     if (!title || !rows) return
     let slug = slugify(title) || 'obra'
     for (let n = 2; rows.some((r) => r.slug === slug); n++) slug = `${slugify(title)}-${n}`
@@ -133,7 +140,7 @@ function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
       .select('id')
       .single()
     if (error) setError('Não foi possível criar a obra.')
-    else onOpen(data.id)
+    else onOpen(data.id, files)
   }
 
   return (
@@ -143,9 +150,26 @@ function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
           <h1 className="font-serif text-4xl text-olive">Obras</h1>
           <p className="mt-2 text-primary-600">A ordem desta lista é a ordem do site.</p>
         </div>
-        <button onClick={create} className={PRIMARY}>
-          <Plus className="w-4 h-4" strokeWidth={1.5} /> Nova obra
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button onClick={() => folderInput.current?.click()} className={SECONDARY}>
+            <FolderOpen className="w-4 h-4" strokeWidth={1.5} /> Nova obra de uma pasta
+          </button>
+          <button onClick={() => create()} className={PRIMARY}>
+            <Plus className="w-4 h-4" strokeWidth={1.5} /> Nova obra
+          </button>
+          <input
+            ref={folderInput}
+            type="file"
+            hidden
+            multiple
+            {...FOLDER_PICKER}
+            onChange={(e) => {
+              const files = filesFromInput(e.target.files)
+              e.target.value = ''
+              if (files.length) create(files)
+            }}
+          />
+        </div>
       </div>
       {error && <div className="mt-6"><Notice text={error} error /></div>}
       {!rows ? (
@@ -184,7 +208,7 @@ function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
   )
 }
 
-function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
+function ProjectEditor({ id, initialFiles, onBack }: { id: string; initialFiles?: PickedFile[]; onBack: () => void }) {
   const [project, setProject] = useState<ProjectRow | null>(null)
   const [photos, setPhotos] = useState<PhotoRow[]>([])
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null)
@@ -192,6 +216,9 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
   const [uploading, setUploading] = useState(0)
   const fileInput = useRef<HTMLInputElement>(null)
   const coverInput = useRef<HTMLInputElement>(null)
+  const folderInput = useRef<HTMLInputElement>(null)
+  const [importing, setImporting] = useState<PickedFile[] | null>(initialFiles?.length ? initialFiles : null)
+  const [dragOver, setDragOver] = useState(false)
 
   const say = (text: string, error = false) => {
     setMessage({ text, error })
@@ -283,6 +310,13 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
       say('Não foi possível enviar a capa.', true)
     }
     setUploading(0)
+  }
+
+  const finishImport = async ({ added, failed, cover }: { added: number; failed: number; cover?: string }) => {
+    setImporting(null)
+    await loadPhotos()
+    if (cover) await setCover(cover)
+    say(failed ? `${added} foto(s) enviadas, ${failed} com problema.` : `${added} foto(s) adicionadas!`, failed > 0)
   }
 
   const updatePhoto = async (photo: PhotoRow, change: Partial<PhotoRow>) => {
@@ -403,17 +437,48 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
         </div>
       </div>
 
-      {/* Galeria */}
-      <div className="mt-16 border-t border-olive/15 pt-10">
+      {/* Galeria (aceita uma pasta arrastada) */}
+      <div
+        className={`mt-16 border-t border-olive/15 pt-10 ${dragOver ? 'outline-dashed outline-2 outline-olive/40 outline-offset-8' : ''}`}
+        onDragOver={(e) => {
+          if (importing) return
+          e.preventDefault()
+          setDragOver(true)
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={async (e) => {
+          if (importing) return
+          e.preventDefault()
+          setDragOver(false)
+          const files = await filesFromDrop(e)
+          if (files.length) setImporting(files)
+        }}
+      >
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="font-serif text-3xl text-olive">Fotos</h2>
             <p className="mt-2 text-sm text-primary-600">
               Use as setas para mudar a ordem, o sofá para marcar como interiores e a estrela para usar como capa.
-              Essas mudanças valem na hora.
+              Essas mudanças valem na hora. Para trazer muitas fotos, arraste a pasta da obra para cá.
             </p>
           </div>
-          <button onClick={() => fileInput.current?.click()} disabled={uploading > 0} className={PRIMARY}>
+          <div className="flex flex-wrap gap-3">
+          <button onClick={() => folderInput.current?.click()} disabled={uploading > 0 || !!importing} className={SECONDARY}>
+            <FolderOpen className="w-4 h-4" strokeWidth={1.5} /> Importar pasta
+          </button>
+          <input
+            ref={folderInput}
+            type="file"
+            hidden
+            multiple
+            {...FOLDER_PICKER}
+            onChange={(e) => {
+              const files = filesFromInput(e.target.files)
+              e.target.value = ''
+              if (files.length) setImporting(files)
+            }}
+          />
+          <button onClick={() => fileInput.current?.click()} disabled={uploading > 0 || !!importing} className={PRIMARY}>
             {uploading > 0 ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" /> Enviando {uploading}…
@@ -435,9 +500,20 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
               e.target.value = ''
             }}
           />
+          </div>
         </div>
 
-        {photos.length === 0 ? (
+        {importing ? (
+          <FolderImport
+            projectId={id}
+            folder={project.slug}
+            existing={photos}
+            hasCover={!!project.cover_url}
+            initial={importing}
+            onDone={finishImport}
+            onCancel={() => setImporting(null)}
+          />
+        ) : photos.length === 0 ? (
           <p className="mt-8 text-primary-500">Nenhuma foto ainda.</p>
         ) : (
           <ul className="mt-8 grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -488,6 +564,7 @@ function ProjectEditor({ id, onBack }: { id: string; onBack: () => void }) {
 export default function AdminPage() {
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [openFiles, setOpenFiles] = useState<PickedFile[] | undefined>()
   const [tab, setTab] = useState<'obras' | 'config'>(() => (window.location.hash === '#configuracoes' ? 'config' : 'obras'))
 
   useEffect(() => {
@@ -496,8 +573,9 @@ export default function AdminPage() {
     return () => data.subscription.unsubscribe()
   }, [])
 
-  const open = (id: string | null) => {
+  const open = (id: string | null, files?: PickedFile[]) => {
     setOpenId(id)
+    setOpenFiles(files)
     window.scrollTo({ top: 0 })
   }
 
@@ -548,7 +626,7 @@ export default function AdminPage() {
         {tab === 'config' ? (
           <SettingsPanel />
         ) : openId ? (
-          <ProjectEditor id={openId} onBack={() => open(null)} />
+          <ProjectEditor key={openId} id={openId} initialFiles={openFiles} onBack={() => open(null)} />
         ) : (
           <ProjectList onOpen={open} />
         )}
