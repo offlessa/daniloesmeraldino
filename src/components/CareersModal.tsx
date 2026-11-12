@@ -4,7 +4,11 @@ import { FileText, Loader2, Paperclip, X } from 'lucide-react'
 import { whatsappUrl } from '../constants/social'
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from '../lib/supabaseConfig'
 
-const AREAS = ['Arquitetura', 'Interiores', 'Engenharia', 'Comercial', 'Marketing', 'Estágio']
+const AREAS = ['Arquitetura', 'Interiores', 'Engenharia', 'Comercial', 'Marketing', 'Administração']
+
+/** ['arquitetura', 'interiores', 'marketing'] → 'arquitetura, interiores e marketing' */
+const joinAreas = (parts: string[]) =>
+  parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join(', ')} e ${parts[parts.length - 1]}`
 
 // Currículo: PDF, Word ou foto, até 5 MB (o mesmo limite do armazenamento)
 const ACCEPT = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
@@ -41,10 +45,10 @@ async function uploadResume(file: File) {
   return `${SUPABASE_URL}/storage/v1/object/public/curriculos/${path}`
 }
 
-const buildMessage = (name: string, area: string, intro: string, resume?: string) =>
+const buildMessage = (name: string, areas: string[], intro: string, resume?: string) =>
   [
     `Olá! Meu nome é ${name.trim()}, moro em Tubarão/SC e vim através do site, na área Trabalhe Conosco.`,
-    `Tenho interesse em fazer parte da equipe na área de ${area.toLowerCase()}.`,
+    `Tenho interesse em fazer parte da equipe na${areas.length > 1 ? 's áreas' : ' área'} de ${joinAreas(AREAS.filter((a) => areas.includes(a)).map((a) => a.toLowerCase()))}.`,
     intro.trim(),
     resume ? `Meu currículo: ${resume}` : 'Posso enviar meu currículo por aqui.',
   ]
@@ -54,7 +58,7 @@ const buildMessage = (name: string, area: string, intro: string, resume?: string
 /** Trabalhe conosco: só para quem mora em Tubarão. Anexa o currículo e monta a mensagem para o WhatsApp. */
 export default function CareersModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [name, setName] = useState('')
-  const [area, setArea] = useState('')
+  const [areas, setAreas] = useState<string[]>([])
   const [local, setLocal] = useState<'sim' | 'nao' | null>(null)
   const [intro, setIntro] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -65,7 +69,8 @@ export default function CareersModal({ open, onClose }: { open: boolean; onClose
   const fileInput = useRef<HTMLInputElement>(null)
   const messageRef = useRef<HTMLTextAreaElement>(null)
 
-  const filled = name.trim() && area && local === 'sim'
+  const filled = name.trim() && areas.length > 0 && local === 'sim'
+  const toggleArea = (a: string) => setAreas((cur) => (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]))
 
   useEffect(() => {
     if (!open) return
@@ -102,7 +107,7 @@ export default function CareersModal({ open, onClose }: { open: boolean; onClose
         setWarning('Não conseguimos anexar o currículo agora. Envie o arquivo direto na conversa do WhatsApp.')
       }
     }
-    setMessage(buildMessage(name, area, intro, link))
+    setMessage(buildMessage(name, areas, intro, link))
     setSending(false)
     setTimeout(() => messageRef.current?.focus(), 50)
   }
@@ -178,9 +183,10 @@ export default function CareersModal({ open, onClose }: { open: boolean; onClose
 
                   <fieldset>
                     <legend className={LABEL}>Área de interesse</legend>
+                    <p className="mt-2 text-sm text-primary-500">Pode marcar mais de uma.</p>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {AREAS.map((a) => (
-                        <button key={a} type="button" aria-pressed={area === a} onClick={() => setArea(a)} className={chip(area === a)}>
+                        <button key={a} type="button" aria-pressed={areas.includes(a)} onClick={() => toggleArea(a)} className={chip(areas.includes(a))}>
                           {a}
                         </button>
                       ))}
