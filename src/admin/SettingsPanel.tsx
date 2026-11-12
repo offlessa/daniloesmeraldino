@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Loader2, RefreshCw, Send } from 'lucide-react'
-import { readSettings, rebuildSite, saveSettings, type SettingKey } from './settings'
+import { readSettings, rebuildSite, saveSettings, testEmail, type SettingKey } from './settings'
 import { supabase } from '../lib/supabase'
-import { NOTIFY_KEY, notifyByEmail, setSiteText } from '../data/store'
+import { NOTIFY_KEY, setSiteText } from '../data/store'
 import { CONTACT } from '../constants/config'
 
 const FIELD =
@@ -11,7 +11,7 @@ const LABEL = 'block text-[10px] tracking-[0.3em] uppercase text-olive-light'
 const BTN =
   'inline-flex items-center gap-2 border border-olive/30 px-5 py-3 text-[11px] tracking-[0.25em] uppercase text-olive hover:border-olive transition-colors disabled:opacity-40'
 
-/** Configurações do painel: atualização do Google */
+/** Configurações do painel: aviso de depoimento por e-mail e atualização do Google */
 export default function SettingsPanel() {
   const [values, setValues] = useState<Partial<Record<SettingKey, string>> | null>(null)
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null)
@@ -39,7 +39,7 @@ export default function SettingsPanel() {
     try {
       setMessage({ text: await fn() })
     } catch {
-      setMessage({ text: 'Não foi possível salvar. Rode o arquivo supabase/settings.sql no Supabase e tente de novo.', error: true })
+      setMessage({ text: 'Não deu certo. Confira se os arquivos supabase/settings.sql e supabase/aviso-email.sql foram rodados no Supabase.', error: true })
     }
     setBusy(false)
   }
@@ -60,14 +60,18 @@ export default function SettingsPanel() {
         <div>
           <h2 className="font-serif text-2xl text-olive">Aviso de depoimento por e-mail</h2>
           <p className="mt-2 text-sm text-primary-600 leading-relaxed">
-            Quando alguém deixar um depoimento no site, chega um e-mail com o nome e o texto. Usa o serviço gratuito
-            FormSubmit: na primeira vez chega um e-mail dele pedindo para <strong>confirmar o endereço</strong> (botão
-            “Activate Form”). Depois disso, todos os avisos chegam. Olhe também a caixa de spam.
+            Quando alguém deixar um depoimento no site, chega um e-mail de <strong>avisos@daniloesmeraldino.com.br</strong>{' '}
+            com o nome e o texto. O envio é pelo Resend (domínio do site já verificado): cole abaixo a chave criada em
+            resend.com → API Keys.
           </p>
         </div>
         <label className="block">
           <span className={LABEL}>E-mail que recebe os avisos</span>
           <input type="email" value={notify} onChange={(e) => setNotify(e.target.value)} placeholder="contato@escritorio.com.br" className={FIELD} />
+        </label>
+        <label className="block">
+          <span className={LABEL}>Chave do Resend (API Key)</span>
+          <input value={values.resend_apikey ?? ''} onChange={set('resend_apikey')} placeholder="re_…" className={FIELD} />
         </label>
         <div className="flex flex-wrap gap-3">
           <button
@@ -80,7 +84,8 @@ export default function SettingsPanel() {
                   : await supabase.from('site_content').delete().eq('key', NOTIFY_KEY)
                 if (error) throw error
                 setSiteText(NOTIFY_KEY, value || null)
-                return value ? 'Salvo! Agora clique em “Enviar teste” e confirme o e-mail que chegar.' : 'Aviso desligado.'
+                await saveSettings({ resend_apikey: values.resend_apikey })
+                return 'Salvo! Agora clique em “Enviar teste”.'
               })
             }
             className="inline-flex items-center gap-2 bg-olive px-6 py-3 text-[11px] tracking-[0.25em] uppercase text-sand-light hover:bg-olive-dark disabled:opacity-40"
@@ -88,16 +93,13 @@ export default function SettingsPanel() {
             Salvar
           </button>
           <button
-            disabled={busy || !notify.trim()}
+            disabled={busy || !values.resend_apikey}
             onClick={() =>
-              act(async () => {
-                await notifyByEmail(notify, {
-                  name: 'Teste do painel',
-                  company: '',
-                  text: 'Se este e-mail chegou, os avisos de depoimento novo estão funcionando.',
-                })
-                return 'Enviado! Na primeira vez chega o pedido de confirmação do FormSubmit: clique em “Activate Form”.'
-              })
+              act(async () =>
+                (await testEmail())
+                  ? 'E-mail de teste enviado! Deve chegar em menos de 1 minuto (olhe também o spam).'
+                  : 'Salve a chave do Resend antes de testar.'
+              )
             }
             className={BTN}
           >

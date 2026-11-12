@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabase'
 
 // Configurações privadas (tabela admin_settings: só o administrador logado lê e altera)
-export type SettingKey = 'deploy_hook'
+export type SettingKey = 'deploy_hook' | 'resend_apikey'
 
 export async function readSettings(): Promise<Partial<Record<SettingKey, string>>> {
   const { data } = await supabase.from('admin_settings').select('key, value')
@@ -16,6 +16,16 @@ export async function saveSettings(values: Partial<Record<SettingKey, string>>) 
   }))
   const { error } = await supabase.from('admin_settings').upsert(rows)
   if (error) throw error
+}
+
+/**
+ * E-mail de teste pelo Resend. Quem envia é o banco (a chave nunca passa pelo navegador).
+ * false = falta salvar a chave.
+ */
+export async function testEmail(): Promise<boolean> {
+  const { data, error } = await supabase.rpc('testar_aviso_email')
+  if (error) throw error
+  return data === true
 }
 
 /**

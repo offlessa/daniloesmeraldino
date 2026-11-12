@@ -1,5 +1,4 @@
 import { useSyncExternalStore } from 'react'
-import { CONTACT } from '../constants/config'
 import { projects as staticProjects, projectSlug, type Project } from './projects'
 import { galleries as staticGalleries } from './galleries'
 import { testimonials as staticTestimonials, type Testimonial } from './testimonials'
@@ -147,32 +146,8 @@ export async function sendTestimonial(t: { name: string; company: string; text: 
     body: JSON.stringify(t),
   })
   if (!res.ok) throw new Error(`envio recusado (${res.status})`)
-  // Aviso por e-mail ao escritório (endereço escolhido no painel). Se falhar, o depoimento já foi salvo.
-  notifyByEmail(data.texts[NOTIFY_KEY] ?? CONTACT.email, t).catch(() => {})
 }
 
-/** Onde fica, entre os textos do site, o e-mail que recebe o aviso de depoimento novo */
+/** Onde fica, entre os textos do site, o e-mail que recebe o aviso de depoimento novo (o banco lê daqui) */
 export const NOTIFY_KEY = 'notify.email'
 
-/**
- * Manda o aviso pelo FormSubmit (gratuito, sem cadastro): na primeira mensagem para um endereço,
- * ele pede para confirmar por e-mail; depois disso entrega todas.
- */
-export async function notifyByEmail(to: string | undefined, t: { name: string; company: string; text: string }) {
-  const address = to?.trim()
-  if (!address) return
-  const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(address)}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      _subject: `Novo depoimento no site: ${t.name}`,
-      _template: 'table',
-      _captcha: 'false',
-      Nome: t.name,
-      'Obra ou cidade': t.company || '-',
-      Depoimento: t.text,
-      'Para aprovar': 'Entre no site com a conta de administrador: https://www.daniloesmeraldino.com.br/#testimonials',
-    }),
-  })
-  if (!res.ok) throw new Error(`aviso recusado (${res.status})`)
-}
