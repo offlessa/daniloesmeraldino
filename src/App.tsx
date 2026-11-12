@@ -13,6 +13,7 @@ import DevNotice from './components/DevNotice'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectPage from './pages/ProjectPage'
 import QuizPage from './pages/QuizPage'
+import NotFoundPage from './pages/NotFoundPage'
 import QuizCta from './components/QuizCta'
 import Faq from './components/Faq'
 import { INTRO_DELAY } from './constants/motion'
@@ -74,6 +75,8 @@ function App() {
         <ProjectsPage />
       ) : route.page === 'quiz' ? (
         <QuizPage />
+      ) : route.page === 'notfound' ? (
+        <NotFoundPage />
       ) : (
         <Home />
       )}

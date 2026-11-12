@@ -4,5 +4,24 @@
     { "source": "/projetos/:slug", "destination": "/index.html" },
     { "source": "/descubra", "destination": "/index.html" },
     { "source": "/admin", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://fnomjyzmhiqxfvrqmxbs.supabase.co; media-src 'self' blob: https://fnomjyzmhiqxfvrqmxbs.supabase.co; connect-src 'self' https://fnomjyzmhiqxfvrqmxbs.supabase.co https://api.vercel.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
   ]
 }

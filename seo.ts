@@ -138,6 +138,16 @@ const fixedPages: Page[] = [
 
 const SEO_BLOCK = /<!-- seo -->[\s\S]*?<!-- \/seo -->/
 
+/** Pré-carregamento da foto da abertura (a escolhida no painel, ou a original), com as versões leves */
+async function heroPreload() {
+  const rows = await fromDb<{ value: string }[]>('site_content?select=value&key=eq.hero.image')
+  const src = rows?.[0]?.value || '/images/web/hero-background.jpg'
+  const light = /^\/images\/web\/.+\.jpg$/.test(src) || /-r\.jpg$/.test(src)
+  const base = src.replace(/\.jpg$/, '')
+  const set = light ? ` imagesrcset="${base}.800.webp 800w, ${base}.1400.webp 1400w, ${src} 2000w" imagesizes="(min-width: 1024px) 60vw, 100vw"` : ''
+  return `<link rel="preload" as="image" href="${src}"${set} fetchpriority="high" />`
+}
+
 /**
  * Depois do build, gera uma cópia do index.html para cada página (/projetos e /projetos/<casa>)
  * com título, descrição e foto próprios — é o que o Google e o WhatsApp leem —
@@ -174,8 +184,21 @@ export function seo(): Plugin {
         `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
       )
 
-      // Página inicial: perguntas frequentes no formato do Google (só nela, depois das cópias)
-      writeFileSync(join(outDir, 'index.html'), html.replace('</head>', `    ${await faqJsonLd()}\n  </head>`))
+      // Endereço que não existe: a Vercel mostra este arquivo (com o código 404) e o site abre a página de erro
+      writeFileSync(
+        join(outDir, '404.html'),
+        html.replace(
+          SEO_BLOCK,
+          '<!-- seo -->\n    <title>Página não encontrada · Danilo Esmeraldino</title>\n    <meta name="robots" content="noindex" />\n    <!-- /seo -->'
+        )
+      )
+
+      // Página inicial: perguntas frequentes no formato do Google e a foto da abertura pedida já no
+      // começo do carregamento (é o maior elemento da tela; antes ela só começava depois do JavaScript)
+      writeFileSync(
+        join(outDir, 'index.html'),
+        html.replace('</head>', `    ${await heroPreload()}\n    ${await faqJsonLd()}\n  </head>`)
+      )
     },
   }
 }

@@ -8,7 +8,7 @@ const URL_KEY = 'google.reviewUrl'
 const RATING_KEY = 'google.rating'
 
 export default function GoogleReviews() {
-  const url = useSiteText(URL_KEY, '').trim()
+  const url = useSiteText(URL_KEY, 'https://g.page/r/CUD51AMLtIB3EAE/review').trim()
   const rating = useSiteText(RATING_KEY, '').trim()
   const { editing, api } = useEdit()
 

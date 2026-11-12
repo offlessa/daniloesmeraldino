@@ -16,7 +16,9 @@ export const route = projectMatch
       ? ({ page: 'quiz' } as const)
       : path === ADMIN_PATH
         ? ({ page: 'admin' } as const)
-        : ({ page: 'home' } as const)
+        : path === '' || path === '/index.html'
+          ? ({ page: 'home' } as const)
+          : ({ page: 'notfound' } as const)
 
 /** A abertura com a logo só aparece na página inicial */
 export const IS_HOME = route.page === 'home'

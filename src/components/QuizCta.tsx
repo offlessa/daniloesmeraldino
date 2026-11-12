@@ -33,7 +33,7 @@ export default function QuizCta() {
         </FadeIn>
 
         <FadeIn className="lg:col-span-6 lg:col-start-7" delay={0.15}>
-          <a href={QUIZ_PATH} className="grid grid-cols-3 gap-3 sm:gap-4" aria-hidden tabIndex={-1}>
+          <a href={QUIZ_PATH} className="grid grid-cols-3 gap-3 sm:gap-4" aria-label="Fazer o teste: descubra qual casa combina com você">
             {PREVIEW.map((id, i) => (
               <span
                 key={id}

@@ -10,7 +10,7 @@ export default function Preloader() {
     const t = setTimeout(() => {
       setDone(true)
       document.body.style.overflow = ''
-    }, 1600)
+    }, 800)
     return () => {
       clearTimeout(t)
       document.body.style.overflow = ''
@@ -23,7 +23,7 @@ export default function Preloader() {
         <motion.div
           className="fixed inset-0 z-[100] bg-white flex items-center justify-center"
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          transition={{ duration: 0.45, ease: 'easeInOut' }}
         >
           <motion.img
             src="/images/danilo-esmeraldino-logo.png"
@@ -31,7 +31,7 @@ export default function Preloader() {
             className="h-16 sm:h-20 w-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
           />
         </motion.div>
       )}
